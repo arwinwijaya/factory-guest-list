@@ -647,11 +647,11 @@ body {
         flex-direction: column;
     }
 
-    .nav-hamburger {
+    .navbar .nav-hamburger {
         display: block;
     }
 
-    .nav-links {
+    .navbar .nav-links {
         display: none;
         flex-direction: column;
         position: absolute;
