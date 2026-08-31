@@ -1,0 +1,321 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { readFileSync } from 'fs';
+import { JSDOM } from 'jsdom';
+import { resolve } from 'path';
+
+const root = resolve(import.meta.dirname, '../../');
+
+/**
+ * Load app.js source code and evaluate it in a JSDOM environment
+ * with a mocked localStorage. Functions are exposed on window.
+ */
+function createAppEnv() {
+  const appJs = readFileSync(resolve(root, 'js/app.js'), 'utf-8');
+
+  const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+    url: 'http://localhost/',
+    runScripts: 'dangerously',
+  });
+
+  const { window } = dom;
+  const store = {};
+
+  const mockStorage = {
+    getItem: vi.fn((key) => store[key] || null),
+    setItem: vi.fn((key, value) => { store[key] = value; }),
+    removeItem: vi.fn((key) => { delete store[key]; }),
+    clear: vi.fn(() => { Object.keys(store).forEach(k => delete store[k]); }),
+    get length() { return Object.keys(store).length; },
+    key: vi.fn((i) => Object.keys(store)[i] || null),
+  };
+
+  Object.defineProperty(window, 'localStorage', { value: mockStorage, writable: true });
+
+  // Execute app.js via the window's eval to get function declarations on window
+  window.eval(appJs);
+
+  return {
+    window,
+    document: window.document,
+    localStorage: mockStorage,
+    store,
+  };
+}
+
+// ============================================
+// Cycle 1: New guest gets Active status
+// ============================================
+describe('Cycle 1: New guest gets Active status', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+  });
+
+  it('Given the admin submits a new guest form, When the guest is added, Then the default status is "active"', () => {
+    const guestData = {
+      nama: 'Budi Santoso',
+      tanggal: '2025-09-15',
+      perusahaan: 'PT Maju Jaya',
+      keperluan: 'Meeting kerja sama',
+    };
+
+    const newGuest = env.window.addGuest(guestData);
+
+    expect(newGuest).toBeDefined();
+    expect(newGuest.status).toBe('active');
+  });
+
+  it('Given a new guest is added, When we check the stored data, Then status is "active"', () => {
+    const guestData = {
+      nama: 'Siti Rahayu',
+      tanggal: '2025-09-20',
+      perusahaan: 'CV Berkah',
+      keperluan: 'Kunjungan pabrik',
+    };
+
+    env.window.addGuest(guestData);
+    const guests = env.window.getGuests();
+
+    expect(guests).toHaveLength(1);
+    expect(guests[0].status).toBe('active');
+  });
+});
+
+// ============================================
+// Cycle 2: Admin changes guest status via buttons
+// ============================================
+describe('Cycle 2: Admin changes guest status via buttons', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+  });
+
+  it('Given a guest with status "active", When the admin changes to "ongoing", Then the status updates to "ongoing"', () => {
+    const guestData = {
+      nama: 'Andi Wijaya',
+      tanggal: '2025-09-10',
+      perusahaan: 'PT Sejahtera',
+      keperluan: 'Audit',
+    };
+
+    const newGuest = env.window.addGuest(guestData);
+    expect(newGuest.status).toBe('active');
+
+    const success = env.window.updateGuestStatus(newGuest.id, 'ongoing');
+    expect(success).toBe(true);
+
+    const updatedGuest = env.window.getGuestById(newGuest.id);
+    expect(updatedGuest.status).toBe('ongoing');
+  });
+
+  it('Given a guest, When admin changes status, Then changeStatus function exists', () => {
+    expect(typeof env.window.changeStatus).toBe('function');
+  });
+});
+
+// ============================================
+// Cycle 3: Status badge displays correct color
+// ============================================
+describe('Cycle 3: Status badge displays correct color', () => {
+  it('Given a guest with status "reschedule", When getStatusClass is called, Then the class is "status-reschedule"', () => {
+    const env = createAppEnv();
+    const className = env.window.getStatusClass('reschedule');
+    expect(className).toBe('status-reschedule');
+  });
+
+  it('getStatusLabel returns "Active" for "active" status', () => {
+    const env = createAppEnv();
+    expect(env.window.getStatusLabel('active')).toBe('Active');
+  });
+
+  it('getStatusLabel returns "On-Going" for "ongoing" status', () => {
+    const env = createAppEnv();
+    expect(env.window.getStatusLabel('ongoing')).toBe('On-Going');
+  });
+
+  it('getStatusLabel returns "Reschedule" for "reschedule" status', () => {
+    const env = createAppEnv();
+    expect(env.window.getStatusLabel('reschedule')).toBe('Reschedule');
+  });
+
+  it('getStatusLabel returns "Cancel" for "cancel" status', () => {
+    const env = createAppEnv();
+    expect(env.window.getStatusLabel('cancel')).toBe('Cancel');
+  });
+
+  it('getStatusClass returns "status-active" for "active"', () => {
+    const env = createAppEnv();
+    expect(env.window.getStatusClass('active')).toBe('status-active');
+  });
+
+  it('getStatusClass returns "status-ongoing" for "ongoing"', () => {
+    const env = createAppEnv();
+    expect(env.window.getStatusClass('ongoing')).toBe('status-ongoing');
+  });
+
+  it('getStatusClass returns "status-cancel" for "cancel"', () => {
+    const env = createAppEnv();
+    expect(env.window.getStatusClass('cancel')).toBe('status-cancel');
+  });
+});
+
+// ============================================
+// Cycle 4: Free status transition (Cancel -> Active)
+// ============================================
+describe('Cycle 4: Free status transition (Cancel -> Active)', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+  });
+
+  it('Given a guest with status "cancel", When the admin changes to "active", Then the status updates to "active"', () => {
+    const guestData = {
+      nama: 'Rina Hartati',
+      tanggal: '2025-09-05',
+      perusahaan: 'PT Makmur',
+      keperluan: 'Presentasi',
+    };
+
+    const newGuest = env.window.addGuest(guestData);
+
+    // Transition active -> cancel
+    env.window.updateGuestStatus(newGuest.id, 'cancel');
+    let guest = env.window.getGuestById(newGuest.id);
+    expect(guest.status).toBe('cancel');
+
+    // Transition cancel -> active (free transition)
+    const success = env.window.updateGuestStatus(newGuest.id, 'active');
+    expect(success).toBe(true);
+
+    guest = env.window.getGuestById(newGuest.id);
+    expect(guest.status).toBe('active');
+  });
+
+  it('Given a guest with any status, When changed to any other status, Then transition succeeds', () => {
+    const guestData = {
+      nama: 'Dedi Kurniawan',
+      tanggal: '2025-09-12',
+      perusahaan: 'CV Jaya',
+      keperluan: 'Konsultasi',
+    };
+
+    const newGuest = env.window.addGuest(guestData);
+    const transitions = ['ongoing', 'reschedule', 'cancel', 'active', 'ongoing', 'reschedule'];
+
+    transitions.forEach((status) => {
+      const success = env.window.updateGuestStatus(newGuest.id, status);
+      expect(success).toBe(true);
+      const guest = env.window.getGuestById(newGuest.id);
+      expect(guest.status).toBe(status);
+    });
+  });
+});
+
+// ============================================
+// Cycle 5: All statuses appear on Display board
+// ============================================
+describe('Cycle 5: All statuses appear on Display board', () => {
+  it('Given guests with all 4 statuses, When createGuestRow is called for each, Then all rows render with correct status classes', () => {
+    const env = createAppEnv();
+
+    const statuses = ['active', 'ongoing', 'reschedule', 'cancel'];
+    const expectedClasses = ['status-active', 'status-ongoing', 'status-reschedule', 'status-cancel'];
+    const expectedLabels = ['Active', 'On-Going', 'Reschedule', 'Cancel'];
+
+    statuses.forEach((status, index) => {
+      const guest = {
+        id: `test_${status}`,
+        nama: `Tamu ${status}`,
+        tanggal: '2025-09-15',
+        perusahaan: 'PT Test',
+        keperluan: 'Testing',
+        status: status,
+      };
+
+      const row = env.window.createGuestRow(guest, false);
+
+      // Check status class
+      const statusSpan = row.querySelector('.board-status');
+      expect(statusSpan).not.toBeNull();
+      expect(statusSpan.className).toContain(expectedClasses[index]);
+      expect(statusSpan.textContent.trim()).toBe(expectedLabels[index]);
+    });
+  });
+
+  it('Given guests with all 4 statuses in admin mode, When createGuestRow is called, Then status badge and buttons render correctly', () => {
+    const env = createAppEnv();
+
+    const guest = {
+      id: 'test_admin_guest',
+      nama: 'Tamu Admin',
+      tanggal: '2025-09-15',
+      perusahaan: 'PT Admin',
+      keperluan: 'Testing Admin',
+      status: 'active',
+    };
+
+    const row = env.window.createGuestRow(guest, true);
+
+    // Check status badge
+    const statusSpan = row.querySelector('.status-badge');
+    expect(statusSpan).not.toBeNull();
+    expect(statusSpan.className).toContain('status-active');
+    expect(statusSpan.textContent.trim()).toBe('Active');
+
+    // Check action buttons exist (should have 4 status buttons + delete)
+    const buttons = row.querySelectorAll('.action-buttons .status-btn');
+    expect(buttons.length).toBe(4);
+  });
+});
+
+// ============================================
+// Refactor: Old status functions removed
+// ============================================
+describe('Refactor: Old status functions removed', () => {
+  it('getNextStatus should not exist', () => {
+    const env = createAppEnv();
+    expect(typeof env.window.getNextStatus).toBe('undefined');
+  });
+
+  it('Default status for addGuest should not be "menunggu"', () => {
+    const env = createAppEnv();
+    const guestData = {
+      nama: 'Test',
+      tanggal: '2025-09-15',
+      perusahaan: 'Test',
+      keperluan: 'Test',
+    };
+    const guest = env.window.addGuest(guestData);
+    expect(guest.status).not.toBe('menunggu');
+  });
+});
+
+// ============================================
+// Integration: admin.html has status buttons
+// ============================================
+describe('Integration: admin.html has status buttons', () => {
+  it('admin.html contains changeStatus function call', () => {
+    const adminHtml = readFileSync(resolve(root, 'admin.html'), 'utf-8');
+    expect(adminHtml).toContain('changeStatus');
+  });
+
+  it('admin.html does not contain old toggleStatus cycle function', () => {
+    const adminHtml = readFileSync(resolve(root, 'admin.html'), 'utf-8');
+    expect(adminHtml).not.toContain('toggleStatus');
+  });
+});
+
+// ============================================
+// Integration: display.html has no old statusPriority
+// ============================================
+describe('Integration: display.html uses new status values', () => {
+  it('display.html does not contain old statusPriority with menunggu/meeting/selesai', () => {
+    const displayHtml = readFileSync(resolve(root, 'display.html'), 'utf-8');
+    expect(displayHtml).not.toContain("'menunggu'");
+    expect(displayHtml).not.toContain("'meeting'");
+    expect(displayHtml).not.toContain("'selesai'");
+  });
+});

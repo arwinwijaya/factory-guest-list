@@ -78,7 +78,7 @@ function addGuest(guestData) {
         tanggal: guestData.tanggal,
         perusahaan: guestData.perusahaan,
         keperluan: guestData.keperluan,
-        status: 'menunggu', // menunggu, meeting, selesai
+        status: 'active', // active, ongoing, reschedule, cancel
         createdAt: new Date().toISOString()
     };
     
@@ -181,9 +181,10 @@ function getCurrentDate() {
 
 function getStatusLabel(status) {
     const labels = {
-        'menunggu': 'Menunggu',
-        'meeting': 'Meeting',
-        'selesai': 'Selesai'
+        'active': 'Active',
+        'ongoing': 'On-Going',
+        'reschedule': 'Reschedule',
+        'cancel': 'Cancel'
     };
     return labels[status] || status;
 }
@@ -192,13 +193,13 @@ function getStatusClass(status) {
     return `status-${status}`;
 }
 
-function getNextStatus(currentStatus) {
-    const flow = {
-        'menunggu': 'meeting',
-        'meeting': 'selesai',
-        'selesai': 'menunggu'
-    };
-    return flow[currentStatus] || 'menunggu';
+function changeStatus(id, newStatus) {
+    const success = updateGuestStatus(id, newStatus);
+    if (success && typeof loadGuests === 'function') {
+        loadGuests();
+        showNotification(`Status diubah ke ${getStatusLabel(newStatus)}`);
+    }
+    return success;
 }
 
 // ============================================
@@ -274,9 +275,10 @@ function createGuestRow(guest, isAdmin = false) {
             </td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn btn-small" onclick="toggleStatus('${guest.id}')">
-                        Status
-                    </button>
+                    <button class="btn btn-small status-btn" onclick="changeStatus('${guest.id}', 'active')">Active</button>
+                    <button class="btn btn-small status-btn" onclick="changeStatus('${guest.id}', 'ongoing')">On-Going</button>
+                    <button class="btn btn-small status-btn" onclick="changeStatus('${guest.id}', 'reschedule')">Reschedule</button>
+                    <button class="btn btn-small status-btn" onclick="changeStatus('${guest.id}', 'cancel')">Cancel</button>
                     <button class="btn btn-small btn-danger" onclick="removeGuest('${guest.id}')">
                         Hapus
                     </button>

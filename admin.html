@@ -186,16 +186,8 @@
             showNotification('Tamu berhasil ditambahkan!');
         });
 
-        // Toggle guest status
-        function toggleStatus(id) {
-            const guest = getGuestById(id);
-            if (guest) {
-                const newStatus = getNextStatus(guest.status);
-                updateGuestStatus(id, newStatus);
-                loadGuests();
-                showNotification(`Status diubah ke ${getStatusLabel(newStatus)}`);
-            }
-        }
+        // Status changes are handled by changeStatus() in app.js
+        // which is called from status buttons in createGuestRow()
 
         // Delete guest
         function removeGuest(id) {
