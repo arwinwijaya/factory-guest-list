@@ -2,9 +2,9 @@
   "header": {
     "plan_dir": "docs/pocket/plans/2025-08-31-factory-guest-web-improvement",
     "plan_type": "flat",
-    "status": "IN_PROGRESS",
+    "status": "DONE",
     "date_started": "2026-08-31",
-    "date_completed": null,
+    "date_completed": "2026-08-31",
     "baseline_sha": "6e6de7e5aeca41198215d24f8971be44a2061876",
     "pipeline": 4
   },
@@ -12,7 +12,7 @@
     {
       "order": 1,
       "file": "execution-plan.md",
-      "status": "WAITING",
+      "status": "DONE",
       "tasks": [
         {
           "id": "T1",
