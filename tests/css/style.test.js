@@ -98,16 +98,16 @@ describe('Theme Rebranding - GGF Brand Colors', () => {
       expect(styles['background']).toBe('rgba(0, 107, 63, 0.2)');
     });
 
-    it('.status-active should have color #006B3F', () => {
+    it('.status-active should have color var(--primary-color)', () => {
       const styles = getSelectorStyles(cssContent, '.status-active');
       expect(styles).not.toBeNull();
-      expect(styles['color']).toBe('#006B3F');
+      expect(styles['color']).toBe('var(--primary-color)');
     });
 
-    it('.status-active should have border #006B3F', () => {
+    it('.status-active should have border var(--primary-color)', () => {
       const styles = getSelectorStyles(cssContent, '.status-active');
       expect(styles).not.toBeNull();
-      expect(styles['border']).toBe('1px solid #006B3F');
+      expect(styles['border']).toBe('1px solid var(--primary-color)');
     });
 
     it('.status-ongoing should have background rgba(245, 166, 35, 0.2)', () => {
@@ -116,16 +116,16 @@ describe('Theme Rebranding - GGF Brand Colors', () => {
       expect(styles['background']).toBe('rgba(245, 166, 35, 0.2)');
     });
 
-    it('.status-ongoing should have color #F5A623', () => {
+    it('.status-ongoing should have color var(--accent-orange)', () => {
       const styles = getSelectorStyles(cssContent, '.status-ongoing');
       expect(styles).not.toBeNull();
-      expect(styles['color']).toBe('#F5A623');
+      expect(styles['color']).toBe('var(--accent-orange)');
     });
 
-    it('.status-ongoing should have border #F5A623', () => {
+    it('.status-ongoing should have border var(--accent-orange)', () => {
       const styles = getSelectorStyles(cssContent, '.status-ongoing');
       expect(styles).not.toBeNull();
-      expect(styles['border']).toBe('1px solid #F5A623');
+      expect(styles['border']).toBe('1px solid var(--accent-orange)');
     });
 
     it('.status-reschedule should have background rgba(196, 214, 0, 0.2)', () => {
@@ -134,16 +134,16 @@ describe('Theme Rebranding - GGF Brand Colors', () => {
       expect(styles['background']).toBe('rgba(196, 214, 0, 0.2)');
     });
 
-    it('.status-reschedule should have color #C4D600', () => {
+    it('.status-reschedule should have color var(--accent-yellow)', () => {
       const styles = getSelectorStyles(cssContent, '.status-reschedule');
       expect(styles).not.toBeNull();
-      expect(styles['color']).toBe('#C4D600');
+      expect(styles['color']).toBe('var(--accent-yellow)');
     });
 
-    it('.status-reschedule should have border #C4D600', () => {
+    it('.status-reschedule should have border var(--accent-yellow)', () => {
       const styles = getSelectorStyles(cssContent, '.status-reschedule');
       expect(styles).not.toBeNull();
-      expect(styles['border']).toBe('1px solid #C4D600');
+      expect(styles['border']).toBe('1px solid var(--accent-yellow)');
     });
 
     it('.status-cancel should have background rgba(78, 205, 196, 0.2)', () => {
@@ -152,16 +152,16 @@ describe('Theme Rebranding - GGF Brand Colors', () => {
       expect(styles['background']).toBe('rgba(78, 205, 196, 0.2)');
     });
 
-    it('.status-cancel should have color #4ECDC4', () => {
+    it('.status-cancel should have color var(--accent-blue)', () => {
       const styles = getSelectorStyles(cssContent, '.status-cancel');
       expect(styles).not.toBeNull();
-      expect(styles['color']).toBe('#4ECDC4');
+      expect(styles['color']).toBe('var(--accent-blue)');
     });
 
-    it('.status-cancel should have border #4ECDC4', () => {
+    it('.status-cancel should have border var(--accent-blue)', () => {
       const styles = getSelectorStyles(cssContent, '.status-cancel');
       expect(styles).not.toBeNull();
-      expect(styles['border']).toBe('1px solid #4ECDC4');
+      expect(styles['border']).toBe('1px solid var(--accent-blue)');
     });
   });
 
@@ -170,28 +170,28 @@ describe('Theme Rebranding - GGF Brand Colors', () => {
       const styles = getSelectorStyles(cssContent, '.board-status.status-active');
       expect(styles).not.toBeNull();
       expect(styles['text-shadow']).toBe('0 0 10px rgba(0, 107, 63, 0.5)');
-      expect(styles['color']).toBe('#006B3F');
+      expect(styles['color']).toBe('var(--primary-color)');
     });
 
     it('.board-status.status-ongoing should have text-shadow glow', () => {
       const styles = getSelectorStyles(cssContent, '.board-status.status-ongoing');
       expect(styles).not.toBeNull();
       expect(styles['text-shadow']).toBe('0 0 10px rgba(245, 166, 35, 0.5)');
-      expect(styles['color']).toBe('#F5A623');
+      expect(styles['color']).toBe('var(--accent-orange)');
     });
 
     it('.board-status.status-reschedule should have text-shadow glow', () => {
       const styles = getSelectorStyles(cssContent, '.board-status.status-reschedule');
       expect(styles).not.toBeNull();
       expect(styles['text-shadow']).toBe('0 0 10px rgba(196, 214, 0, 0.5)');
-      expect(styles['color']).toBe('#C4D600');
+      expect(styles['color']).toBe('var(--accent-yellow)');
     });
 
     it('.board-status.status-cancel should have text-shadow glow', () => {
       const styles = getSelectorStyles(cssContent, '.board-status.status-cancel');
       expect(styles).not.toBeNull();
       expect(styles['text-shadow']).toBe('0 0 10px rgba(78, 205, 196, 0.5)');
-      expect(styles['color']).toBe('#4ECDC4');
+      expect(styles['color']).toBe('var(--accent-blue)');
     });
   });
 

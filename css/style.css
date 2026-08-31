@@ -335,26 +335,26 @@ body {
 
 .status-active {
     background: rgba(0, 107, 63, 0.2);
-    color: #006B3F;
-    border: 1px solid #006B3F;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
 }
 
 .status-ongoing {
     background: rgba(245, 166, 35, 0.2);
-    color: #F5A623;
-    border: 1px solid #F5A623;
+    color: var(--accent-orange);
+    border: 1px solid var(--accent-orange);
 }
 
 .status-reschedule {
     background: rgba(196, 214, 0, 0.2);
-    color: #C4D600;
-    border: 1px solid #C4D600;
+    color: var(--accent-yellow);
+    border: 1px solid var(--accent-yellow);
 }
 
 .status-cancel {
     background: rgba(78, 205, 196, 0.2);
-    color: #4ECDC4;
-    border: 1px solid #4ECDC4;
+    color: var(--accent-blue);
+    border: 1px solid var(--accent-blue);
 }
 
 /* Action Buttons */
@@ -508,22 +508,22 @@ body {
 }
 
 .board-status.status-active {
-    color: #006B3F;
+    color: var(--primary-color);
     text-shadow: 0 0 10px rgba(0, 107, 63, 0.5);
 }
 
 .board-status.status-ongoing {
-    color: #F5A623;
+    color: var(--accent-orange);
     text-shadow: 0 0 10px rgba(245, 166, 35, 0.5);
 }
 
 .board-status.status-reschedule {
-    color: #C4D600;
+    color: var(--accent-yellow);
     text-shadow: 0 0 10px rgba(196, 214, 0, 0.5);
 }
 
 .board-status.status-cancel {
-    color: #4ECDC4;
+    color: var(--accent-blue);
     text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
 }
 
