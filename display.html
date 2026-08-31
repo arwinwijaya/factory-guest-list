@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Board - Daftar Tamu Factory</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="display-container">
+        <!-- Header with Clock -->
+        <div class="display-header">
+            <h1>🏭 Daftar Tamu Factory</h1>
+            <div class="subtitle">Visitor Management System</div>
+            <div class="clock" id="clock">00:00:00</div>
+            <div class="subtitle" id="current-date"></div>
+        </div>
+
+        <!-- Board -->
+        <div class="board-container">
+            <table class="board-table">
+                <thead>
+                    <tr>
+                        <th>Nama Tamu</th>
+                        <th>Tanggal</th>
+                        <th>Perusahaan</th>
+                        <th>Keperluan</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="boardTableBody">
+                    <!-- Guest rows will be inserted here -->
+                </tbody>
+            </table>
+            
+            <div id="boardEmpty" class="board-empty hidden">
+                <p>Tidak ada tamu hari ini</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="display-footer">
+            <p>🏭 Factory Visitor Management System • Auto-refresh setiap 30 detik</p>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Load and display guests on board
+        function loadBoard() {
+            const guests = getGuests();
+            const tbody = document.getElementById('boardTableBody');
+            const emptyState = document.getElementById('boardEmpty');
+            
+            // Clear table
+            tbody.innerHTML = '';
+            
+            if (guests.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                
+                // Sort by date (newest first), then by status
+                const sortedGuests = [...guests].sort((a, b) => {
+                    // First by date
+                    const dateA = new Date(a.tanggal);
+                    const dateB = new Date(b.tanggal);
+                    if (dateB.getTime() !== dateA.getTime()) {
+                        return dateB - dateA;
+                    }
+                    
+                    // Then by status priority
+                    const statusPriority = {
+                        'menunggu': 0,
+                        'meeting': 1,
+                        'selesai': 2
+                    };
+                    return statusPriority[a.status] - statusPriority[b.status];
+                });
+                
+                sortedGuests.forEach((guest, index) => {
+                    const row = createGuestRow(guest, false);
+                    
+                    // Stagger animation
+                    row.style.animationDelay = `${index * 0.1}s`;
+                    
+                    tbody.appendChild(row);
+                });
+            }
+        }
+
+        // Initialize
+        function init() {
+            // Start clock
+            initClock();
+            initDate();
+            
+            // Load board
+            loadBoard();
+            
+            // Auto-refresh every 30 seconds
+            startAutoRefresh(loadBoard, 30000);
+            
+            // Also refresh when page becomes visible (tab switch)
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    loadBoard();
+                }
+            });
+        }
+
+        // Start the app
+        init();
+    </script>
+</body>
+</html>
