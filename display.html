@@ -74,12 +74,8 @@
             } else {
                 emptyState.classList.add('hidden');
                 
-                // Sort by date (newest first)
-                const sortedGuests = [...guests].sort((a, b) => {
-                    const dateA = new Date(a.tanggal);
-                    const dateB = new Date(b.tanggal);
-                    return dateB - dateA;
-                });
+                // Sort by visit date (today first, future ascending, past descending)
+                const sortedGuests = sortGuestsByDate(guests);
                 
                 sortedGuests.forEach((guest, index) => {
                     const row = createGuestRow(guest, false);

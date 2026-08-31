@@ -254,6 +254,64 @@ function importFromJSON(file) {
 }
 
 // ============================================
+// SORT FUNCTIONS
+// ============================================
+
+/**
+ * Sort guests by visit date with the following priority:
+ * 1. Today's guests first
+ * 2. Future dates ascending (nearest first)
+ * 3. Past dates descending (most recent first)
+ * 4. Same-date tiebreaker by createdAt descending (newest first)
+ *
+ * @param {Array} guests - Array of guest objects
+ * @param {string} [todayStr] - Optional today's date string (YYYY-MM-DD) for testability
+ * @returns {Array} Sorted array (does not mutate original)
+ */
+function sortGuestsByDate(guests, todayStr) {
+    if (!Array.isArray(guests) || guests.length === 0) return [];
+
+    const today = todayStr || new Date().toISOString().split('T')[0];
+
+    // Classify each guest into: today, future, past
+    const todayGuests = [];
+    const futureGuests = [];
+    const pastGuests = [];
+
+    guests.forEach(guest => {
+        if (guest.tanggal === today) {
+            todayGuests.push(guest);
+        } else if (guest.tanggal > today) {
+            futureGuests.push(guest);
+        } else {
+            pastGuests.push(guest);
+        }
+    });
+
+    // Helper: sort by createdAt descending (newest first)
+    const byCreatedAtDesc = (a, b) => new Date(b.createdAt) - new Date(a.createdAt);
+
+    // Today: newest createdAt first
+    todayGuests.sort(byCreatedAtDesc);
+
+    // Future: ascending by tanggal (nearest first), tiebreak by createdAt desc
+    futureGuests.sort((a, b) => {
+        const dateDiff = a.tanggal.localeCompare(b.tanggal);
+        if (dateDiff !== 0) return dateDiff;
+        return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    // Past: descending by tanggal (most recent first), tiebreak by createdAt desc
+    pastGuests.sort((a, b) => {
+        const dateDiff = b.tanggal.localeCompare(a.tanggal);
+        if (dateDiff !== 0) return dateDiff;
+        return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    return [...todayGuests, ...futureGuests, ...pastGuests];
+}
+
+// ============================================
 // DISPLAY HELPERS
 // ============================================
 
