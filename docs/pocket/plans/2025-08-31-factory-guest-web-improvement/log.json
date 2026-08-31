@@ -1,0 +1,54 @@
+{
+  "header": {
+    "plan_dir": "docs/pocket/plans/2025-08-31-factory-guest-web-improvement",
+    "plan_type": "flat",
+    "status": "IN_PROGRESS",
+    "date_started": "2026-08-31",
+    "date_completed": null,
+    "baseline_sha": "6e6de7e5aeca41198215d24f8971be44a2061876",
+    "pipeline": 4
+  },
+  "phases": [
+    {
+      "order": 1,
+      "file": "execution-plan.md",
+      "status": "WAITING",
+      "tasks": [
+        {
+          "id": "T1",
+          "name": "CSS Theme Rebranding",
+          "status": "DONE",
+          "done_sha": "e02c4ec1b92fe71ff1ca3235baac20c47fee8f91"
+        },
+        {
+          "id": "T2",
+          "name": "Navigation Bar",
+          "status": "DONE",
+          "depends": "T1",
+          "done_sha": "feb755c3bfd3a74192584ec7886bd53dfd52e662"
+        },
+        {
+          "id": "T3",
+          "name": "Status Flow",
+          "status": "DONE",
+          "depends": "T1",
+          "done_sha": "0a6f1ac1e01a7cf4762b88a2c01204376bd656fb"
+        },
+        {
+          "id": "T4",
+          "name": "Sort by Visit Date",
+          "status": "DONE",
+          "depends": "T3",
+          "done_sha": "3de37faad1a3006587bbcc80b4feb3d5966f52f3"
+        },
+        {
+          "id": "T5",
+          "name": "Date Picker Fix",
+          "status": "DONE",
+          "depends": "T1",
+          "done_sha": "49889d409b6876c1cf2dc499e0a5153c10ff4869"
+        }
+      ]
+    }
+  ]
+}

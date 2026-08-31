@@ -1,0 +1,28 @@
+{
+  "name": "factory-guest-list",
+  "version": "1.0.0",
+  "description": "factory-guest-list",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arwinwijaya/factory-guest-list.git"
+  },
+  "keywords": [],
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/arwinwijaya/factory-guest-list/issues"
+  },
+  "homepage": "https://github.com/arwinwijaya/factory-guest-list#readme",
+  "devDependencies": {
+    "flatpickr": "^4.6.13",
+    "jsdom": "^30.0.1",
+    "vitest": "^4.1.11"
+  }
+}
