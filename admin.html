@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Daftar Tamu Factory</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -55,9 +57,11 @@
                         <div class="form-group">
                             <label for="tanggal">Tanggal Kunjungan</label>
                             <input 
-                                type="date" 
+                                type="text" 
                                 id="tanggal" 
                                 name="tanggal" 
+                                placeholder="Pilih tanggal"
+                                readonly
                                 required
                             >
                         </div>
@@ -128,8 +132,12 @@
             window.location.href = 'login.html';
         }
 
-        // Set default date to today
-        document.getElementById('tanggal').valueAsDate = new Date();
+        // Initialize Flatpickr date picker
+        flatpickr('#tanggal', {
+            dateFormat: 'Y-m-d',
+            defaultDate: 'today',
+            locale: 'id'
+        });
 
         // Load and display guests
         function loadGuests() {
@@ -177,7 +185,12 @@
             
             // Reset form
             this.reset();
-            document.getElementById('tanggal').valueAsDate = new Date();
+            // Re-initialize Flatpickr to reset to today
+            flatpickr('#tanggal', {
+                dateFormat: 'Y-m-d',
+                defaultDate: 'today',
+                locale: 'id'
+            });
             
             // Reload table
             loadGuests();

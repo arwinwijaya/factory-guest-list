@@ -678,6 +678,32 @@ body {
 .mb-16 { margin-bottom: 16px; }
 .hidden { display: none; }
 
+/* ============================================
+   FLATPICKR THEME OVERRIDES (GGF Colors)
+   ============================================ */
+.flatpickr-calendar {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.flatpickr-months .flatpickr-month {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    color: white;
+}
+
+span.flatpickr-day.selected {
+    background: var(--accent-orange);
+    border-color: var(--accent-orange);
+}
+
+span.flatpickr-day:hover {
+    background: rgba(245, 166, 35, 0.2);
+}
+
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
     width: 8px;
