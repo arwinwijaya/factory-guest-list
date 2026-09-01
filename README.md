@@ -146,12 +146,6 @@ Untuk bantuan atau pertanyaan:
 - Buat issue di GitHub
 - Email: muhamad.arwinwijaya@gg-foods.com
 
-## 🙏 Acknowledgments
-
-- GGF (Global Green Factory) untuk brand guidelines
-- Flatpickr untuk date picker library
-- Vitest untuk testing framework
-
 ---
 
 **Made with ❤️ for Factory Management**
