@@ -34,6 +34,16 @@ Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Wajib login sebelum akses halaman admin
   - Jika sudah login, otomatis redirect ke admin.html
 
+- **Auto Delete Past Guests** (`feat(cleanup)`)
+  - Tamu dengan tanggal kunjungan sebelum hari ini otomatis dihapus
+  - Berjalan saat page load dan setiap 30 detik (auto-refresh)
+  - `getTodayStr()` helper dengan local timezone (fix UTC bug)
+  - 5 test baru untuk getTodayStr dan cleanPastGuests
+
+- **Favicon** (`feat(ui)`)
+  - Favicon logo GGF di semua halaman
+  - Menggunakan file `img/GGF.png` yang sudah ada
+
 ### Changed
 - **UI Color Rebalance** (`feat(theme)`)
   - Kuning tidak lagi dominan — hanya untuk aksen kecil
@@ -50,9 +60,14 @@ Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Notification Color Fix** (`fix(theme)`)
   - Fix `--accent-green` (tidak ada) → `--primary-color`
 
+- **Display Footer** (`fix(ui)`)
+  - Hapus tulisan "Auto-refresh setiap 30 detik" dari footer
+  - Fungsi auto-refresh tetap berjalan
+
 ### Fixed
 - Warna kuning terlalu dominan di UI
 - Notifikasi menggunakan variable yang tidak ada
+- UTC timezone bug di `addGuest()` dan `getTodayGuests()`
 
 ---
 

@@ -14,6 +14,7 @@ Dokumentasi lengkap untuk semua fungsi JavaScript yang tersedia.
 - [Export/Import Functions](#exportimport-functions)
 - [Sort Functions](#sort-functions)
 - [Display Helpers](#display-helpers)
+- [Cleanup Functions](#cleanup-functions)
 - [Initialization Functions](#initialization-functions)
 
 ---
@@ -558,6 +559,51 @@ tableBody.appendChild(row);
 // Mode admin (dengan tombol aksi)
 const adminRow = createGuestRow(guest, true);
 tableBody.appendChild(adminRow);
+```
+
+---
+
+## Cleanup Functions
+
+### getTodayStr(date?)
+Mengambil tanggal hari ini dalam format YYYY-MM-DD (local timezone).
+
+**Parameters:**
+- `date` (Date, optional) - Objek Date untuk testing, default: `new Date()`
+
+**Returns:**
+- `string` - Tanggal hari ini (contoh: "2025-09-01")
+
+**Example:**
+```javascript
+const today = getTodayStr();
+console.log(today); // "2025-09-01"
+
+// Untuk testing
+const testDate = new Date(2025, 0, 15);
+console.log(getTodayStr(testDate)); // "2025-01-15"
+```
+
+---
+
+### cleanPastGuests()
+Menghapus tamu yang tanggal kunjungannya sudah lewat (sebelum hari ini).
+
+**Parameters:**
+- Tidak ada
+
+**Returns:**
+- `number` - Jumlah tamu yang dihapus
+
+**Behavior:**
+- Dijalankan saat page load di admin.html dan display.html
+- Dijalankan setiap 30 detik via auto-refresh di display.html
+- Menggunakan local timezone (bukan UTC)
+
+**Example:**
+```javascript
+const removed = cleanPastGuests();
+console.log(`${removed} tamu dengan tanggal lewat telah dihapus`);
 ```
 
 ---

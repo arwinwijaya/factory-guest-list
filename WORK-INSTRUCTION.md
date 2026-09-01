@@ -178,10 +178,13 @@ Klik "Import" → Pilih file JSON → Data di merge dengan existing
 - Export/Import buttons
 
 ### 3. display.html
-- Navigasi (logo + menu)
+- Navigasi (menu Admin & Display)
+- Logo GGF di atas tengah
 - Tampilan board tamu
 - Diurutkan berdasarkan tanggal
-- Badge status berwarna
+- Status tulisan bold berwarna (tanpa kotak)
+- Auto-delete tamu tanggal lewat
+- Auto-refresh setiap 30 detik
 
 ---
 

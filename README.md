@@ -15,6 +15,7 @@ Aplikasi web untuk mengelola daftar tamu pabrik dengan antarmuka yang mudah digu
 - 🗑️ **Auto Cleanup** - Tamu dengan tanggal lewat otomatis dihapus
 - 🖥️ **Display Board** - Tampilan publik untuk lobby/resepsionis
 - 📦 **Export/Import** - Backup dan restore data (JSON)
+- 🎯 **Favicon** - Logo GGF di tab browser
 
 ## 🚀 Demo
 
