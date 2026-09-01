@@ -91,29 +91,23 @@ describe('Theme Rebranding - GGF Brand Colors', () => {
     });
   });
 
-  describe('Cycle 2: Status badges use brand colors', () => {
-    it('.status-active should have background rgba(0, 107, 63, 0.2)', () => {
-      const styles = getSelectorStyles(cssContent, '.status-active');
-      expect(styles).not.toBeNull();
-      expect(styles['background']).toBe('rgba(0, 107, 63, 0.2)');
-    });
-
+  describe('Cycle 2: Status badges use brand colors (no box)', () => {
     it('.status-active should have color var(--primary-color)', () => {
       const styles = getSelectorStyles(cssContent, '.status-active');
       expect(styles).not.toBeNull();
       expect(styles['color']).toBe('var(--primary-color)');
     });
 
-    it('.status-active should have border var(--primary-color)', () => {
+    it('.status-active should NOT have background', () => {
       const styles = getSelectorStyles(cssContent, '.status-active');
       expect(styles).not.toBeNull();
-      expect(styles['border']).toBe('1px solid var(--primary-color)');
+      expect(styles['background']).toBeUndefined();
     });
 
-    it('.status-ongoing should have background rgba(245, 166, 35, 0.2)', () => {
-      const styles = getSelectorStyles(cssContent, '.status-ongoing');
+    it('.status-active should NOT have border', () => {
+      const styles = getSelectorStyles(cssContent, '.status-active');
       expect(styles).not.toBeNull();
-      expect(styles['background']).toBe('rgba(245, 166, 35, 0.2)');
+      expect(styles['border']).toBeUndefined();
     });
 
     it('.status-ongoing should have color var(--accent-orange)', () => {
@@ -122,16 +116,16 @@ describe('Theme Rebranding - GGF Brand Colors', () => {
       expect(styles['color']).toBe('var(--accent-orange)');
     });
 
-    it('.status-ongoing should have border var(--accent-orange)', () => {
+    it('.status-ongoing should NOT have background', () => {
       const styles = getSelectorStyles(cssContent, '.status-ongoing');
       expect(styles).not.toBeNull();
-      expect(styles['border']).toBe('1px solid var(--accent-orange)');
+      expect(styles['background']).toBeUndefined();
     });
 
-    it('.status-reschedule should have background rgba(196, 214, 0, 0.2)', () => {
-      const styles = getSelectorStyles(cssContent, '.status-reschedule');
+    it('.status-ongoing should NOT have border', () => {
+      const styles = getSelectorStyles(cssContent, '.status-ongoing');
       expect(styles).not.toBeNull();
-      expect(styles['background']).toBe('rgba(196, 214, 0, 0.2)');
+      expect(styles['border']).toBeUndefined();
     });
 
     it('.status-reschedule should have color var(--accent-yellow)', () => {
@@ -140,16 +134,16 @@ describe('Theme Rebranding - GGF Brand Colors', () => {
       expect(styles['color']).toBe('var(--accent-yellow)');
     });
 
-    it('.status-reschedule should have border var(--accent-yellow)', () => {
+    it('.status-reschedule should NOT have background', () => {
       const styles = getSelectorStyles(cssContent, '.status-reschedule');
       expect(styles).not.toBeNull();
-      expect(styles['border']).toBe('1px solid var(--accent-yellow)');
+      expect(styles['background']).toBeUndefined();
     });
 
-    it('.status-cancel should have background rgba(78, 205, 196, 0.2)', () => {
-      const styles = getSelectorStyles(cssContent, '.status-cancel');
+    it('.status-reschedule should NOT have border', () => {
+      const styles = getSelectorStyles(cssContent, '.status-reschedule');
       expect(styles).not.toBeNull();
-      expect(styles['background']).toBe('rgba(78, 205, 196, 0.2)');
+      expect(styles['border']).toBeUndefined();
     });
 
     it('.status-cancel should have color var(--accent-blue)', () => {
@@ -158,10 +152,16 @@ describe('Theme Rebranding - GGF Brand Colors', () => {
       expect(styles['color']).toBe('var(--accent-blue)');
     });
 
-    it('.status-cancel should have border var(--accent-blue)', () => {
+    it('.status-cancel should NOT have background', () => {
       const styles = getSelectorStyles(cssContent, '.status-cancel');
       expect(styles).not.toBeNull();
-      expect(styles['border']).toBe('1px solid var(--accent-blue)');
+      expect(styles['background']).toBeUndefined();
+    });
+
+    it('.status-cancel should NOT have border', () => {
+      const styles = getSelectorStyles(cssContent, '.status-cancel');
+      expect(styles).not.toBeNull();
+      expect(styles['border']).toBeUndefined();
     });
   });
 
