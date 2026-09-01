@@ -17,9 +17,17 @@ Aplikasi web untuk mengelola daftar tamu pabrik dengan fitur:
 ### 1. Login Flow
 
 ```
-User → Buka login.html → Masukkan credentials → Login → Redirect ke admin.html
-                                                      ↓
-                                                Jika gagal → Tampilkan error
+User → Klik "Admin" di navbar → login.html
+                                      ↓
+                               Sudah login? ──Ya──→ Redirect ke admin.html
+                                      ↓
+                                     Tidak
+                                      ↓
+                               Tampilkan form login
+                                      ↓
+                               Login berhasil → admin.html
+                                      ↓
+                               Login gagal → Tampilkan error
 ```
 
 **Default Credentials:**
@@ -48,11 +56,15 @@ Admin Login → Lihat Daftar Tamu → Pilih Aksi:
 ```
 Klik "Tambah Tamu" → Isi Form:
                         ├── Nama Tamu (required)
-                        ├── Tanggal Kunjungan (date picker)
+                        ├── Tanggal Kunjungan (date picker, min: hari ini)
                         ├── Perusahaan (required)
                         └── Keperluan (required)
                               ↓
-                        Submit → Data disimpan ke localStorage
+                        Submit → Validasi tanggal (tidak boleh kemarin)
+                              → Status otomatis:
+                              │   ├── Tanggal hari ini → "active"
+                              │   └── Tanggal masa depan → "ongoing"
+                              → Data disimpan ke localStorage
                               → Tabel otomatis update
                               → Notifikasi sukses
 ```
@@ -70,6 +82,11 @@ Klik "Tambah Tamu" → Isi Form:
 }
 ```
 
+**Date Rules:**
+- Tidak bisa pilih tanggal kemarin (minDate: today)
+- Tanggal hari ini → status "active"
+- Tanggal masa depan → status "ongoing"
+
 ---
 
 ### 4. Status Management Flow
@@ -86,6 +103,15 @@ Pilih Tamu → Klik Status Button:
               Notifikasi sukses
 ```
 
+**Conditional Button Rules:**
+| Kondisi | Tombol Disabled | Tombol Aktif |
+|---------|-----------------|--------------|
+| Status = "active" | Active | On-Going, Reschedule, Cancel |
+| Tanggal = hari ini | Active, On-Going | Reschedule, Cancel |
+| Status = "ongoing" | On-Going | Active, Reschedule, Cancel |
+| Status = "reschedule" | Reschedule | Active, On-Going, Cancel |
+| Status = "cancel" | Cancel | Active, On-Going, Reschedule |
+
 **Status Colors:**
 | Status | Warna | Kode |
 |--------|-------|------|
@@ -100,19 +126,22 @@ Pilih Tamu → Klik Status Button:
 
 ```
 Buka display.html → Data tamu otomatis load:
+                      ├── Tamu tanggal lewat otomatis dihapus
                       ├── Diurutkan berdasarkan tanggal kunjungan
                       │   ├── Hari ini (paling atas)
-                      │   ├── Tanggal dekat (ascending)
-                      │   └── Tanggal lalu (descending)
-                      ├── Badge status berwarna
-                      └── Auto-refresh (manual refresh)
+                      │   └── Tanggal dekat (ascending)
+                      ├── Status tulisan bold berwarna (tanpa kotak)
+                      └── Auto-refresh setiap 30 detik
 ```
 
 **Sort Order:**
 1. **Today** - Tamu hari ini (paling atas)
 2. **Future** - Tanggal depan (ascending)
-3. **Past** - Tanggal lalu (descending)
-4. **Tiebreaker** - Jika tanggal sama, urutkan berdasarkan waktu dibuat (terbaru duluan)
+3. **Tiebreaker** - Jika tanggal sama, urutkan berdasarkan waktu dibuat (terbaru duluan)
+
+**Auto Cleanup:**
+- Tamu dengan tanggal kunjungan sebelum hari ini otomatis dihapus
+- Berlaku saat page load dan auto-refresh
 
 ---
 
@@ -241,3 +270,4 @@ fix(scope): description
 | 1.0.0 | 2025-08-31 | Initial release with GGF theme |
 | 1.1.0 | 2025-08-31 | Added navigation, status flow, sorting |
 | 1.2.0 | 2025-08-31 | Fixed date picker with Flatpickr |
+| 1.3.0 | 2025-09-01 | UI rebalance, date validation, auto status, conditional buttons, admin auth |

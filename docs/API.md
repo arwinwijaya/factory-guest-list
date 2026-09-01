@@ -171,27 +171,41 @@ saveGuests(guests);
 ---
 
 ### addGuest(guestData)
-Menambahkan tamu baru.
+Menambahkan tamu baru dengan status otomatis berdasarkan tanggal.
 
 **Parameters:**
 - `guestData` (Object) - Data tamu baru
   - `nama` (string) - Nama tamu
-  - `tanggal` (string) - Tanggal kunjungan (YYYY-MM-DD)
+  - `tanggal` (string) - Tanggal kunjungan (YYYY-MM-DD, minimal hari ini)
   - `perusahaan` (string) - Nama perusahaan
   - `keperluan` (string) - Keperluan kunjungan
 
 **Returns:**
-- `Object` - Data tamu yang baru ditambahkan dengan ID
+- `Object` - Data tamu yang baru ditambahkan dengan ID dan status otomatis
+
+**Status Logic:**
+- `tanggal === today` → status: `'active'`
+- `tanggal > today` → status: `'ongoing'`
 
 **Example:**
 ```javascript
-const newGuest = addGuest({
+// Tamu hari ini → status "active"
+const todayGuest = addGuest({
     nama: 'John Doe',
-    tanggal: '2025-09-01',
+    tanggal: '2025-09-01', // hari ini
     perusahaan: 'PT Maju Jaya',
     keperluan: 'Meeting kerja sama'
 });
-console.log(`Tamu baru ditambahkan dengan ID: ${newGuest.id}`);
+console.log(todayGuest.status); // "active"
+
+// Tamu masa depan → status "ongoing"
+const futureGuest = addGuest({
+    nama: 'Jane Smith',
+    tanggal: '2025-09-15', // masa depan
+    perusahaan: 'CV Berkah',
+    keperluan: 'Kunjungan pabrik'
+});
+console.log(futureGuest.status); // "ongoing"
 ```
 
 ---

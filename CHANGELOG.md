@@ -6,6 +6,56 @@ Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.3.0] - 2025-09-01
+
+### Added
+- **Date Validation** (`feat(datepicker)`)
+  - Flatpickr `minDate: 'today'` — tidak bisa pilih tanggal kemarin
+  - 1 test baru untuk minDate
+
+- **Auto Status Assignment** (`feat(status)`)
+  - Status otomatis berdasarkan tanggal kunjungan
+  - Tanggal hari ini → status "active"
+  - Tanggal masa depan → status "ongoing"
+  - 2 test baru untuk status berdasarkan tanggal
+
+- **Conditional Status Buttons** (`feat(status)`)
+  - Tombol status di-disable berdasarkan kondisi:
+    - Status "active" → tombol Active disabled
+    - Tanggal hari ini → tombol Active & On-Going disabled
+    - Status "ongoing" → tombol On-Going disabled
+    - Status "reschedule" → tombol Reschedule disabled
+    - Status "cancel" → tombol Cancel disabled
+  - Tombol Hapus tetap aktif
+  - 2 test baru untuk conditional disabling
+
+- **Admin Auth Required** (`feat(nav)`)
+  - Link Admin di navbar mengarah ke login.html
+  - Wajib login sebelum akses halaman admin
+  - Jika sudah login, otomatis redirect ke admin.html
+
+### Changed
+- **UI Color Rebalance** (`feat(theme)`)
+  - Kuning tidak lagi dominan — hanya untuk aksen kecil
+  - Tombol, heading, border, focus state menggunakan hijau primary
+  - Logo dipindah dari navbar ke atas tengah halaman Display
+  - Navbar hanya tampilkan "Admin" dan "Display" (Login link dihapus)
+  - Nav links di-align ke pojok kanan
+
+- **Status Badge Simplification** (`fix(theme)`)
+  - Hapus kotak/badge dari status (background, border, padding)
+  - Status sekarang hanya tulisan bold berwarna
+  - Berlaku di tabel Admin dan Display
+
+- **Notification Color Fix** (`fix(theme)`)
+  - Fix `--accent-green` (tidak ada) → `--primary-color`
+
+### Fixed
+- Warna kuning terlalu dominan di UI
+- Notifikasi menggunakan variable yang tidak ada
+
+---
+
 ## [1.2.0] - 2025-08-31
 
 ### Added

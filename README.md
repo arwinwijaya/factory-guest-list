@@ -7,10 +7,12 @@ Aplikasi web untuk mengelola daftar tamu pabrik dengan antarmuka yang mudah digu
 
 ## ✨ Fitur Utama
 
-- 🔐 **Login Authentication** - Akses admin terbatas
+- 🔐 **Login Authentication** - Akses admin wajib login terlebih dahulu
 - 👥 **CRUD Operations** - Tambah, lihat, ubah status, hapus tamu
 - 🏷️ **Status Management** - Active, On-Going, Reschedule, Cancel
-- 📅 **Date Sorting** - Urutan berdasarkan tanggal kunjungan
+- 📅 **Date Validation** - Tidak bisa buat agenda dari tanggal kemarin
+- 🔄 **Auto Status** - Status otomatis berdasarkan tanggal (hari ini = Active, masa depan = On-Going)
+- 🗑️ **Auto Cleanup** - Tamu dengan tanggal lewat otomatis dihapus
 - 🖥️ **Display Board** - Tampilan publik untuk lobby/resepsionis
 - 📦 **Export/Import** - Backup dan restore data (JSON)
 
@@ -47,9 +49,9 @@ Aplikasi menggunakan warna brand GGF (Global Green Factory):
 
 | Warna | Kode | Penggunaan |
 |-------|------|------------|
-| Hijau | `#006B3F` | Primary, navbar, header |
-| Orange | `#F5A623` | Aksen, status On-Going |
-| Kuning | `#C4D600` | Status Reschedule |
+| Hijau | `#006B3F` | Primary, tombol, heading, status Active |
+| Orange | `#F5A623` | Status On-Going |
+| Kuning | `#C4D600` | Aksen kecil, status Reschedule |
 | Teal | `#4ECDC4` | Status Cancel |
 
 ## 📱 Responsive
@@ -135,10 +137,10 @@ npx vitest run tests/js/status.test.js
 |-----------|-------|-----------|
 | style.test.js | 27 | CSS theme & status badges |
 | nav.test.js | 10 | Navigation bar |
-| status.test.js | 21 | Status flow |
+| status.test.js | 23 | Status flow & conditional buttons |
 | sort.test.js | 13 | Date sorting |
-| datepicker.test.js | 12 | Flatpickr integration |
-| **Total** | **83** | |
+| datepicker.test.js | 13 | Flatpickr integration & minDate |
+| **Total** | **89** | |
 
 ## 📝 Git Convention
 
