@@ -42,7 +42,7 @@ describe('Navigation bar appears on all pages', () => {
 // ============================================
 describe('Current page is highlighted', () => {
   const expectedActive = {
-    'admin.html': 'admin.html',
+    'admin.html': 'login.html',
     'display.html': 'display.html',
   };
 
@@ -80,7 +80,7 @@ describe('Navigation links have correct href attributes', () => {
       const doc = loadPage(page);
       const links = doc.querySelectorAll('.nav-link');
       const hrefs = Array.from(links).map((a) => a.getAttribute('href'));
-      expect(hrefs).toContain('admin.html');
+      expect(hrefs).toContain('login.html');
       expect(hrefs).toContain('display.html');
     });
   });

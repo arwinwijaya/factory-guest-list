@@ -332,8 +332,8 @@ function createGuestRow(guest, isAdmin = false) {
         const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         const isToday = guest.tanggal === today;
 
-        // Disable button matching current status, and On-Going if today
-        const disabledActive = guest.status === 'active' ? 'disabled' : '';
+        // Disable button matching current status, and Active+On-Going if today
+        const disabledActive = guest.status === 'active' || isToday ? 'disabled' : '';
         const disabledOngoing = guest.status === 'ongoing' || isToday ? 'disabled' : '';
         const disabledReschedule = guest.status === 'reschedule' ? 'disabled' : '';
         const disabledCancel = guest.status === 'cancel' ? 'disabled' : '';
