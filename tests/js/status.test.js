@@ -42,20 +42,33 @@ function createAppEnv() {
   };
 }
 
+// Helper to get today's date string (YYYY-MM-DD)
+function getTodayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+// Helper to get a future date string (tomorrow)
+function getTomorrowStr() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 // ============================================
-// Cycle 1: New guest gets Active status
+// Cycle 1: New guest status based on date
 // ============================================
-describe('Cycle 1: New guest gets Active status', () => {
+describe('Cycle 1: New guest status based on date', () => {
   let env;
 
   beforeEach(() => {
     env = createAppEnv();
   });
 
-  it('Given the admin submits a new guest form, When the guest is added, Then the default status is "active"', () => {
+  it('Given the admin adds a guest for today, When the guest is added, Then the status is "active"', () => {
     const guestData = {
       nama: 'Budi Santoso',
-      tanggal: '2025-09-15',
+      tanggal: getTodayStr(),
       perusahaan: 'PT Maju Jaya',
       keperluan: 'Meeting kerja sama',
     };
@@ -66,12 +79,26 @@ describe('Cycle 1: New guest gets Active status', () => {
     expect(newGuest.status).toBe('active');
   });
 
-  it('Given a new guest is added, When we check the stored data, Then status is "active"', () => {
+  it('Given the admin adds a guest for a future date, When the guest is added, Then the status is "ongoing"', () => {
     const guestData = {
       nama: 'Siti Rahayu',
-      tanggal: '2025-09-20',
+      tanggal: getTomorrowStr(),
       perusahaan: 'CV Berkah',
       keperluan: 'Kunjungan pabrik',
+    };
+
+    const newGuest = env.window.addGuest(guestData);
+
+    expect(newGuest).toBeDefined();
+    expect(newGuest.status).toBe('ongoing');
+  });
+
+  it('Given a new guest is added for today, When we check the stored data, Then status is "active"', () => {
+    const guestData = {
+      nama: 'Andi Wijaya',
+      tanggal: getTodayStr(),
+      perusahaan: 'PT Sejahtera',
+      keperluan: 'Audit',
     };
 
     env.window.addGuest(guestData);
@@ -79,6 +106,21 @@ describe('Cycle 1: New guest gets Active status', () => {
 
     expect(guests).toHaveLength(1);
     expect(guests[0].status).toBe('active');
+  });
+
+  it('Given a new guest is added for a future date, When we check the stored data, Then status is "ongoing"', () => {
+    const guestData = {
+      nama: 'Rina Hartati',
+      tanggal: getTomorrowStr(),
+      perusahaan: 'PT Makmur',
+      keperluan: 'Presentasi',
+    };
+
+    env.window.addGuest(guestData);
+    const guests = env.window.getGuests();
+
+    expect(guests).toHaveLength(1);
+    expect(guests[0].status).toBe('ongoing');
   });
 });
 
@@ -95,7 +137,7 @@ describe('Cycle 2: Admin changes guest status via buttons', () => {
   it('Given a guest with status "active", When the admin changes to "ongoing", Then the status updates to "ongoing"', () => {
     const guestData = {
       nama: 'Andi Wijaya',
-      tanggal: '2025-09-10',
+      tanggal: getTodayStr(),
       perusahaan: 'PT Sejahtera',
       keperluan: 'Audit',
     };
@@ -174,7 +216,7 @@ describe('Cycle 4: Free status transition (Cancel -> Active)', () => {
   it('Given a guest with status "cancel", When the admin changes to "active", Then the status updates to "active"', () => {
     const guestData = {
       nama: 'Rina Hartati',
-      tanggal: '2025-09-05',
+      tanggal: getTodayStr(),
       perusahaan: 'PT Makmur',
       keperluan: 'Presentasi',
     };
@@ -197,7 +239,7 @@ describe('Cycle 4: Free status transition (Cancel -> Active)', () => {
   it('Given a guest with any status, When changed to any other status, Then transition succeeds', () => {
     const guestData = {
       nama: 'Dedi Kurniawan',
-      tanggal: '2025-09-12',
+      tanggal: getTodayStr(),
       perusahaan: 'CV Jaya',
       keperluan: 'Konsultasi',
     };
@@ -284,7 +326,7 @@ describe('Refactor: Old status functions removed', () => {
     const env = createAppEnv();
     const guestData = {
       nama: 'Test',
-      tanggal: '2025-09-15',
+      tanggal: getTodayStr(),
       perusahaan: 'Test',
       keperluan: 'Test',
     };

@@ -95,6 +95,13 @@ describe('Cycle 1: Date picker opens on click', () => {
     // Check that dateFormat is set to 'Y-m-d'
     expect(adminHtml).toContain("dateFormat: 'Y-m-d'");
   });
+
+  it('Flatpickr has minDate set to today to prevent past date selection', () => {
+    const adminHtml = readFile('admin.html');
+
+    // Check that minDate is set to 'today'
+    expect(adminHtml).toContain("minDate: 'today'");
+  });
 });
 
 // ============================================

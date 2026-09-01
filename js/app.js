@@ -72,13 +72,19 @@ function saveGuests(guests) {
 function addGuest(guestData) {
     const guests = getGuests();
     
+    // Determine status based on date:
+    // - Today → 'active'
+    // - Future → 'ongoing'
+    const today = new Date().toISOString().split('T')[0];
+    const status = guestData.tanggal === today ? 'active' : 'ongoing';
+    
     const newGuest = {
         id: generateId(),
         nama: guestData.nama,
         tanggal: guestData.tanggal,
         perusahaan: guestData.perusahaan,
         keperluan: guestData.keperluan,
-        status: 'active', // active, ongoing, reschedule, cancel
+        status: status,
         createdAt: new Date().toISOString()
     };
     
