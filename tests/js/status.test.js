@@ -310,6 +310,16 @@ describe('Cycle 5: All statuses appear on Display board', () => {
     // Check action buttons exist (should have 4 status buttons + delete)
     const buttons = row.querySelectorAll('.action-buttons .status-btn');
     expect(buttons.length).toBe(4);
+
+    // Check status buttons are disabled
+    buttons.forEach(btn => {
+      expect(btn.hasAttribute('disabled')).toBe(true);
+    });
+
+    // Check delete button is NOT disabled
+    const deleteBtn = row.querySelector('.btn-danger');
+    expect(deleteBtn).not.toBeNull();
+    expect(deleteBtn.hasAttribute('disabled')).toBe(false);
   });
 });
 

@@ -339,10 +339,10 @@ function createGuestRow(guest, isAdmin = false) {
             </td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn btn-small status-btn" onclick="changeStatus('${guest.id}', 'active')">Active</button>
-                    <button class="btn btn-small status-btn" onclick="changeStatus('${guest.id}', 'ongoing')">On-Going</button>
-                    <button class="btn btn-small status-btn" onclick="changeStatus('${guest.id}', 'reschedule')">Reschedule</button>
-                    <button class="btn btn-small status-btn" onclick="changeStatus('${guest.id}', 'cancel')">Cancel</button>
+                    <button class="btn btn-small status-btn" disabled>Active</button>
+                    <button class="btn btn-small status-btn" disabled>On-Going</button>
+                    <button class="btn btn-small status-btn" disabled>Reschedule</button>
+                    <button class="btn btn-small status-btn" disabled>Cancel</button>
                     <button class="btn btn-small btn-danger" onclick="removeGuest('${guest.id}')">
                         Hapus
                     </button>

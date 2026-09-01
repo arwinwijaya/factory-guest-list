@@ -357,6 +357,11 @@ body {
     text-align: center;
 }
 
+.status-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .empty-state {
     text-align: center;
     padding: 48px 24px;
