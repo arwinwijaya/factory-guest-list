@@ -3,12 +3,41 @@
 ## Overview
 
 Aplikasi web untuk mengelola daftar tamu pabrik dengan fitur:
-- **Login Authentication** - Akses admin terbatas
+- **Login Authentication** - Akses admin wajib login terlebih dahulu
 - **CRUD Operations** - Tambah, lihat, ubah status, hapus tamu
 - **Status Management** - Active, On-Going, Reschedule, Cancel
-- **Date Sorting** - Urutan berdasarkan tanggal kunjungan
+- **Date Validation** - Tidak bisa buat agenda dari tanggal kemarin
+- **Auto Status** - Status otomatis berdasarkan tanggal kunjungan
+- **Auto Cleanup** - Tamu dengan tanggal lewat otomatis dihapus
 - **Display Board** - Tampilan publik untuk lobby/resepsionis
 - **Export/Import** - Backup dan restore data
+
+---
+
+## Setup & Instalasi
+
+### Langkah 1: Download File
+Download file ZIP aplikasi dari repository yang telah disediakan.
+
+### Langkah 2: Ekstrak File
+1. Buka **File Explorer** (Windows Explorer)
+2. Navigasi ke **Drive D:** (`D:\`)
+3. Klik kanan pada file ZIP yang sudah di-download
+4. Pilih **"Extract All"** atau **"Ekstrak Semua"**
+5. Pastikan lokasi ekstraksi adalah `D:\`
+6. Klik **"Extract"**
+7. Akan muncul folder baru bernama `factory-guest-list-main`
+
+### Langkah 3: Jalankan Aplikasi
+1. Buka folder `D:\factory-guest-list-main`
+2. Klik ganda file `login.html`
+3. Aplikasi akan terbuka di browser
+
+### Langkah 4: Login
+| Field | Nilai |
+|-------|-------|
+| **Username** | `admin` |
+| **Password** | `admin123` |
 
 ---
 
@@ -141,7 +170,7 @@ Buka display.html → Data tamu otomatis load:
 
 **Auto Cleanup:**
 - Tamu dengan tanggal kunjungan sebelum hari ini otomatis dihapus
-- Berlaku saat page load dan auto-refresh
+- Berlaku saat page load dan auto-refresh (setiap 30 detik)
 
 ---
 
@@ -167,18 +196,22 @@ Klik "Import" → Pilih file JSON → Data di merge dengan existing
 
 ### 1. login.html
 - Form login (username + password)
+- Favicon logo GGF
 - Redirect ke admin.html jika berhasil
 
 ### 2. admin.html
-- Navigasi (logo + menu)
-- Form tambah tamu
+- Navigasi (menu Admin & Display)
+- Favicon logo GGF
+- Form tambah tamu dengan Flatpickr date picker
 - Tabel daftar tamu dengan aksi:
-  - Status buttons (4 warna)
-  - Hapus button
+  - Status buttons (4 warna) - conditional disabling
+  - Hapus button (selalu aktif)
 - Export/Import buttons
+- Auto-delete tamu tanggal lewat saat page load
 
 ### 3. display.html
 - Navigasi (menu Admin & Display)
+- Favicon logo GGF
 - Logo GGF di atas tengah
 - Tampilan board tamu
 - Diurutkan berdasarkan tanggal
@@ -209,6 +242,17 @@ Klik "Import" → Pilih file JSON → Data di merge dengan existing
 - **Flatpickr** - Date picker (CDN)
 - **Vitest** - Unit testing
 
+### Key Functions (js/app.js)
+| Fungsi | Deskripsi |
+|--------|-----------|
+| `getTodayStr()` | Mengambil tanggal hari ini (local timezone) |
+| `cleanPastGuests()` | Hapus tamu dengan tanggal lewat |
+| `addGuest()` | Tambah tamu baru dengan status otomatis |
+| `getGuests()` | Ambil semua data tamu |
+| `saveGuests()` | Simpan data tamu ke localStorage |
+| `sortGuestsByDate()` | Urutkan tamu berdasarkan tanggal |
+| `createGuestRow()` | Buat baris tabel untuk tamu |
+
 ---
 
 ## Testing
@@ -218,12 +262,15 @@ Klik "Import" → Pilih file JSON → Data di merge dengan existing
 npx vitest run
 ```
 
-### Test Files
-- `tests/js/style.test.js` - CSS theme tests
-- `tests/js/nav.test.js` - Navigation tests
-- `tests/js/status.test.js` - Status flow tests
-- `tests/js/sort.test.js` - Sorting tests
-- `tests/js/datepicker.test.js` - Date picker tests
+### Test Coverage
+| Test File | Tests | Deskripsi |
+|-----------|-------|-----------|
+| style.test.js | 27 | CSS theme & status badges |
+| nav.test.js | 10 | Navigation bar |
+| status.test.js | 28 | Status flow, conditional buttons, auto cleanup |
+| sort.test.js | 13 | Date sorting |
+| datepicker.test.js | 13 | Flatpickr integration & minDate |
+| **Total** | **94** | |
 
 ---
 
@@ -233,14 +280,17 @@ npx vitest run
 ```
 feat(scope): description
 fix(scope): description
+docs(scope): description
 ```
 
-### Recent Commits
-- `feat(theme)` - CSS theme rebranding
-- `feat(nav)` - Navigation bar
-- `feat(status)` - Status flow
-- `feat(sort)` - Date sorting
-- `fix(datepicker)` - Flatpickr integration
+### Scopes
+- `theme` - CSS & warna
+- `nav` - Navigasi
+- `status` - Status flow
+- `sort` - Sorting
+- `datepicker` - Date picker
+- `cleanup` - Auto cleanup
+- `ui` - UI/UX umum
 
 ---
 
@@ -258,11 +308,19 @@ fix(scope): description
 1. Gunakan default credentials:
    - Username: `admin`
    - Password: `admin123`
-2. Clear localStorage jika session expired
+2. Clear localStorage jika session expired:
+   - DevTools (F12) → Application → Local Storage
+   - Hapus key `daftar_tamu_auth`
+   - Refresh halaman
 
 ### Display Board Tidak Update
 1. Refresh halaman (F5)
 2. Check koneksi internet (untuk load Flatpickr CDN)
+3. Pastikan browser dalam mode normal (bukan incognito)
+
+### Date Picker Tidak Muncul
+1. Pastikan koneksi internet aktif (Flatpickr dimuat dari CDN)
+2. Refresh halaman
 
 ---
 
@@ -273,4 +331,8 @@ fix(scope): description
 | 1.0.0 | 2025-08-31 | Initial release with GGF theme |
 | 1.1.0 | 2025-08-31 | Added navigation, status flow, sorting |
 | 1.2.0 | 2025-08-31 | Fixed date picker with Flatpickr |
-| 1.3.0 | 2025-09-01 | UI rebalance, date validation, auto status, conditional buttons, admin auth |
+| 1.3.0 | 2025-09-01 | UI rebalance, date validation, auto status, conditional buttons, admin auth, auto cleanup, favicon |
+
+---
+
+**Dokumentasi ini diperbarui terakhir pada: 1 September 2025**
