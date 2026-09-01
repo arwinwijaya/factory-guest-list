@@ -314,9 +314,9 @@ describe('Cycle 5: All statuses appear on Display board', () => {
     expect(statusSpan.className).toContain('status-active');
     expect(statusSpan.textContent.trim()).toBe('Active');
 
-    // Check action buttons exist (should have 4 status buttons + delete)
+    // Check action buttons exist (should have 3 status buttons + delete)
     const buttons = row.querySelectorAll('.action-buttons .status-btn');
-    expect(buttons.length).toBe(4);
+    expect(buttons.length).toBe(3);
 
     // Check delete button is NOT disabled
     const deleteBtn = row.querySelector('.btn-danger');
@@ -324,7 +324,7 @@ describe('Cycle 5: All statuses appear on Display board', () => {
     expect(deleteBtn.hasAttribute('disabled')).toBe(false);
   });
 
-  it('Given a guest with status "active", When createGuestRow is called, Then only Active button is disabled', () => {
+  it('Given a guest with status "active" (today), When createGuestRow is called, Then On-Going button is disabled', () => {
     const env = createAppEnv();
     const d = new Date();
     const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -341,14 +341,12 @@ describe('Cycle 5: All statuses appear on Display board', () => {
     const row = env.window.createGuestRow(guest, true);
     const buttons = row.querySelectorAll('.action-buttons .status-btn');
 
-    // Active button should be disabled (matches status)
-    expect(buttons[0].hasAttribute('disabled')).toBe(true);
     // On-Going button should be disabled (today's date)
-    expect(buttons[1].hasAttribute('disabled')).toBe(true);
+    expect(buttons[0].hasAttribute('disabled')).toBe(true);
     // Reschedule button should be enabled
-    expect(buttons[2].hasAttribute('disabled')).toBe(false);
+    expect(buttons[1].hasAttribute('disabled')).toBe(false);
     // Cancel button should be enabled
-    expect(buttons[3].hasAttribute('disabled')).toBe(false);
+    expect(buttons[2].hasAttribute('disabled')).toBe(false);
   });
 
   it('Given a guest with status "ongoing" and future date, When createGuestRow is called, Then only On-Going button is disabled', () => {
@@ -369,14 +367,12 @@ describe('Cycle 5: All statuses appear on Display board', () => {
     const row = env.window.createGuestRow(guest, true);
     const buttons = row.querySelectorAll('.action-buttons .status-btn');
 
-    // Active button should be enabled
-    expect(buttons[0].hasAttribute('disabled')).toBe(false);
     // On-Going button should be disabled (matches status)
-    expect(buttons[1].hasAttribute('disabled')).toBe(true);
+    expect(buttons[0].hasAttribute('disabled')).toBe(true);
     // Reschedule button should be enabled
-    expect(buttons[2].hasAttribute('disabled')).toBe(false);
+    expect(buttons[1].hasAttribute('disabled')).toBe(false);
     // Cancel button should be enabled
-    expect(buttons[3].hasAttribute('disabled')).toBe(false);
+    expect(buttons[2].hasAttribute('disabled')).toBe(false);
   });
 });
 

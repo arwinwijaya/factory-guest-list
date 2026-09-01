@@ -129,13 +129,14 @@ Tombol status di-disable berdasarkan kondisi berikut:
 
 | Kondisi Saat Ini | Tombol Disabled | Tombol Aktif |
 |------------------|-----------------|--------------|
-| Status = "active" | Active | On-Going, Reschedule, Cancel |
-| Tanggal = hari ini | Active, On-Going | Reschedule, Cancel |
-| Status = "ongoing" | On-Going | Active, Reschedule, Cancel |
-| Status = "reschedule" | Reschedule | Active, On-Going, Cancel |
-| Status = "cancel" | Cancel | Active, On-Going, Reschedule |
+| Tanggal = hari ini | On-Going | Reschedule, Cancel |
+| Status = "ongoing" | On-Going | Reschedule, Cancel |
+| Status = "reschedule" | Reschedule | On-Going, Cancel |
+| Status = "cancel" | Cancel | On-Going, Reschedule |
 
-> **Catatan:** Tombol Hapus selalu aktif dan tidak pernah di-disable.
+> **Catatan:** 
+> - Status "Active" hanya bisa didapat secara otomatis (tanggal = hari ini). Admin tidak bisa set manual.
+> - Tombol Hapus selalu aktif dan tidak pernah di-disable.
 
 ### Warna Status
 
