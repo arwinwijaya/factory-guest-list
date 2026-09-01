@@ -327,6 +327,17 @@ function createGuestRow(guest, isAdmin = false) {
     row.dataset.id = guest.id;
     
     if (isAdmin) {
+        // Compute today's date (local timezone)
+        const d = new Date();
+        const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        const isToday = guest.tanggal === today;
+
+        // Disable button matching current status, and On-Going if today
+        const disabledActive = guest.status === 'active' ? 'disabled' : '';
+        const disabledOngoing = guest.status === 'ongoing' || isToday ? 'disabled' : '';
+        const disabledReschedule = guest.status === 'reschedule' ? 'disabled' : '';
+        const disabledCancel = guest.status === 'cancel' ? 'disabled' : '';
+
         row.innerHTML = `
             <td>${guest.nama}</td>
             <td>${formatDateShort(guest.tanggal)}</td>
@@ -339,10 +350,10 @@ function createGuestRow(guest, isAdmin = false) {
             </td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn btn-small status-btn" disabled>Active</button>
-                    <button class="btn btn-small status-btn" disabled>On-Going</button>
-                    <button class="btn btn-small status-btn" disabled>Reschedule</button>
-                    <button class="btn btn-small status-btn" disabled>Cancel</button>
+                    <button class="btn btn-small status-btn" ${disabledActive} onclick="changeStatus('${guest.id}', 'active')">Active</button>
+                    <button class="btn btn-small status-btn" ${disabledOngoing} onclick="changeStatus('${guest.id}', 'ongoing')">On-Going</button>
+                    <button class="btn btn-small status-btn" ${disabledReschedule} onclick="changeStatus('${guest.id}', 'reschedule')">Reschedule</button>
+                    <button class="btn btn-small status-btn" ${disabledCancel} onclick="changeStatus('${guest.id}', 'cancel')">Cancel</button>
                     <button class="btn btn-small btn-danger" onclick="removeGuest('${guest.id}')">
                         Hapus
                     </button>

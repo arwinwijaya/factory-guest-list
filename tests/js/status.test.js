@@ -311,15 +311,65 @@ describe('Cycle 5: All statuses appear on Display board', () => {
     const buttons = row.querySelectorAll('.action-buttons .status-btn');
     expect(buttons.length).toBe(4);
 
-    // Check status buttons are disabled
-    buttons.forEach(btn => {
-      expect(btn.hasAttribute('disabled')).toBe(true);
-    });
-
     // Check delete button is NOT disabled
     const deleteBtn = row.querySelector('.btn-danger');
     expect(deleteBtn).not.toBeNull();
     expect(deleteBtn.hasAttribute('disabled')).toBe(false);
+  });
+
+  it('Given a guest with status "active", When createGuestRow is called, Then only Active button is disabled', () => {
+    const env = createAppEnv();
+    const d = new Date();
+    const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+    const guest = {
+      id: 'test_active',
+      nama: 'Tamu Active',
+      tanggal: today,
+      perusahaan: 'PT Test',
+      keperluan: 'Testing',
+      status: 'active',
+    };
+
+    const row = env.window.createGuestRow(guest, true);
+    const buttons = row.querySelectorAll('.action-buttons .status-btn');
+
+    // Active button should be disabled (matches status)
+    expect(buttons[0].hasAttribute('disabled')).toBe(true);
+    // On-Going button should be disabled (today's date)
+    expect(buttons[1].hasAttribute('disabled')).toBe(true);
+    // Reschedule button should be enabled
+    expect(buttons[2].hasAttribute('disabled')).toBe(false);
+    // Cancel button should be enabled
+    expect(buttons[3].hasAttribute('disabled')).toBe(false);
+  });
+
+  it('Given a guest with status "ongoing" and future date, When createGuestRow is called, Then only On-Going button is disabled', () => {
+    const env = createAppEnv();
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    const tomorrow = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+    const guest = {
+      id: 'test_ongoing',
+      nama: 'Tamu Ongoing',
+      tanggal: tomorrow,
+      perusahaan: 'PT Test',
+      keperluan: 'Testing',
+      status: 'ongoing',
+    };
+
+    const row = env.window.createGuestRow(guest, true);
+    const buttons = row.querySelectorAll('.action-buttons .status-btn');
+
+    // Active button should be enabled
+    expect(buttons[0].hasAttribute('disabled')).toBe(false);
+    // On-Going button should be disabled (matches status)
+    expect(buttons[1].hasAttribute('disabled')).toBe(true);
+    // Reschedule button should be enabled
+    expect(buttons[2].hasAttribute('disabled')).toBe(false);
+    // Cancel button should be enabled
+    expect(buttons[3].hasAttribute('disabled')).toBe(false);
   });
 });
 
