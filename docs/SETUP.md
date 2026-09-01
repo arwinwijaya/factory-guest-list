@@ -91,7 +91,7 @@ D:\factory-guest-list-main\
 
 **Solusi:**
 1. Pastikan menggunakan kredensial yang benar: `admin` / `admin123`
-2. Buka Developer Tools (F12) → Application → Local Storage
+2. Buka Developer Tools (F12) -> Application -> Local Storage
 3. Hapus key `daftar_tamu_auth`
 4. Refresh halaman dan coba login lagi
 
@@ -108,6 +108,51 @@ D:\factory-guest-list-main\
 | **Auto Cleanup** | Tamu dengan tanggal lewat otomatis dihapus |
 | **Display Board** | Tampilan publik untuk lobby/resepsionis |
 | **Export/Import** | Backup dan restore data dalam format JSON |
+
+---
+
+## Aturan & Rules
+
+### Aturan Tanggal
+
+| Aturan | Keterangan |
+|--------|------------|
+| **Minimal Tanggal** | Tidak bisa memilih tanggal kemarin (minDate: hari ini) |
+| **Status Otomatis** | Tanggal hari ini -> status "active" |
+| | Tanggal masa depan -> status "ongoing" |
+| **Auto Cleanup** | Tamu dengan tanggal sebelum hari ini otomatis dihapus |
+| | Berlaku saat page load dan setiap 30 detik |
+
+### Aturan Tombol Status
+
+Tombol status di-disable berdasarkan kondisi berikut:
+
+| Kondisi Saat Ini | Tombol Disabled | Tombol Aktif |
+|------------------|-----------------|--------------|
+| Status = "active" | Active | On-Going, Reschedule, Cancel |
+| Tanggal = hari ini | Active, On-Going | Reschedule, Cancel |
+| Status = "ongoing" | On-Going | Active, Reschedule, Cancel |
+| Status = "reschedule" | Reschedule | Active, On-Going, Cancel |
+| Status = "cancel" | Cancel | Active, On-Going, Reschedule |
+
+> **Catatan:** Tombol Hapus selalu aktif dan tidak pernah di-disable.
+
+### Warna Status
+
+| Status | Warna | Kode |
+|--------|-------|------|
+| Active | Hijau | #006B3F |
+| On-Going | Orange | #F5A623 |
+| Reschedule | Kuning | #C4D600 |
+| Cancel | Teal | #4ECDC4 |
+
+### Urutan Tampilan di Display Board
+
+| Prioritas | Keterangan |
+|-----------|------------|
+| 1 | Tamu hari ini (paling atas) |
+| 2 | Tanggal depan (ascending/terdekat duluan) |
+| 3 | Jika tanggal sama, urutkan berdasarkan waktu dibuat (terbaru duluan) |
 
 ---
 
