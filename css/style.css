@@ -507,22 +507,18 @@ body {
 
 .board-status.status-active {
     color: var(--primary-color);
-    text-shadow: 0 0 10px rgba(0, 107, 63, 0.5);
 }
 
 .board-status.status-ongoing {
     color: var(--accent-orange);
-    text-shadow: 0 0 10px rgba(245, 166, 35, 0.5);
 }
 
 .board-status.status-reschedule {
     color: var(--accent-yellow);
-    text-shadow: 0 0 10px rgba(196, 214, 0, 0.5);
 }
 
 .board-status.status-cancel {
     color: var(--accent-blue);
-    text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
 }
 
 /* Empty Board State */
@@ -563,9 +559,10 @@ body {
     position: relative;
 }
 
-.nav-logo .logo {
-    height: 40px;
+.display-logo {
+    height: 60px;
     display: block;
+    margin: 0 auto 16px;
 }
 
 .nav-links {

@@ -22,14 +22,18 @@ const pages = ['login.html', 'admin.html', 'display.html'];
 // ============================================
 describe('Navigation bar appears on all pages', () => {
   pages.forEach((page) => {
-    it(`Given the user is on the ${page} page, When the page renders, Then the navigation bar is visible with GGF logo`, () => {
+    it(`Given the user is on the ${page} page, When the page renders, Then the navigation bar is visible`, () => {
       const doc = loadPage(page);
       const navbar = doc.querySelector('nav.navbar');
       expect(navbar).not.toBeNull();
-      const logo = navbar.querySelector('img.logo');
-      expect(logo).not.toBeNull();
-      expect(logo.getAttribute('alt')).toContain('GGF');
     });
+  });
+
+  it('Given the user is on the display page, When the page renders, Then the GGF logo appears in the display header', () => {
+    const doc = loadPage('display.html');
+    const logo = doc.querySelector('.display-header .display-logo');
+    expect(logo).not.toBeNull();
+    expect(logo.getAttribute('alt')).toContain('GGF');
   });
 });
 
@@ -38,17 +42,16 @@ describe('Navigation bar appears on all pages', () => {
 // ============================================
 describe('Current page is highlighted', () => {
   const expectedActive = {
-    'login.html': 'login.html',
     'admin.html': 'admin.html',
     'display.html': 'display.html',
   };
 
-  pages.forEach((page) => {
+  Object.entries(expectedActive).forEach(([page, expectedHref]) => {
     it(`Given the user is on the ${page} page, When the navigation renders, Then the corresponding link has class "active"`, () => {
       const doc = loadPage(page);
       const activeLink = doc.querySelector('.nav-link.active');
       expect(activeLink).not.toBeNull();
-      expect(activeLink.getAttribute('href')).toBe(expectedActive[page]);
+      expect(activeLink.getAttribute('href')).toBe(expectedHref);
     });
   });
 });
@@ -73,11 +76,10 @@ describe('Navigation collapses on mobile', () => {
 // ============================================
 describe('Navigation links have correct href attributes', () => {
   pages.forEach((page) => {
-    it(`Given the navigation renders on ${page}, When we check the links, Then href attributes contain login.html, admin.html, display.html`, () => {
+    it(`Given the navigation renders on ${page}, When we check the links, Then href attributes contain admin.html and display.html`, () => {
       const doc = loadPage(page);
       const links = doc.querySelectorAll('.nav-link');
       const hrefs = Array.from(links).map((a) => a.getAttribute('href'));
-      expect(hrefs).toContain('login.html');
       expect(hrefs).toContain('admin.html');
       expect(hrefs).toContain('display.html');
     });

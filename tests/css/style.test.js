@@ -165,32 +165,28 @@ describe('Theme Rebranding - GGF Brand Colors', () => {
     });
   });
 
-  describe('Board status styles with text-shadow glow', () => {
-    it('.board-status.status-active should have text-shadow glow', () => {
+  describe('Board status styles with bold colored text', () => {
+    it('.board-status.status-active should have color var(--primary-color)', () => {
       const styles = getSelectorStyles(cssContent, '.board-status.status-active');
       expect(styles).not.toBeNull();
-      expect(styles['text-shadow']).toBe('0 0 10px rgba(0, 107, 63, 0.5)');
       expect(styles['color']).toBe('var(--primary-color)');
     });
 
-    it('.board-status.status-ongoing should have text-shadow glow', () => {
+    it('.board-status.status-ongoing should have color var(--accent-orange)', () => {
       const styles = getSelectorStyles(cssContent, '.board-status.status-ongoing');
       expect(styles).not.toBeNull();
-      expect(styles['text-shadow']).toBe('0 0 10px rgba(245, 166, 35, 0.5)');
       expect(styles['color']).toBe('var(--accent-orange)');
     });
 
-    it('.board-status.status-reschedule should have text-shadow glow', () => {
+    it('.board-status.status-reschedule should have color var(--accent-yellow)', () => {
       const styles = getSelectorStyles(cssContent, '.board-status.status-reschedule');
       expect(styles).not.toBeNull();
-      expect(styles['text-shadow']).toBe('0 0 10px rgba(196, 214, 0, 0.5)');
       expect(styles['color']).toBe('var(--accent-yellow)');
     });
 
-    it('.board-status.status-cancel should have text-shadow glow', () => {
+    it('.board-status.status-cancel should have color var(--accent-blue)', () => {
       const styles = getSelectorStyles(cssContent, '.board-status.status-cancel');
       expect(styles).not.toBeNull();
-      expect(styles['text-shadow']).toBe('0 0 10px rgba(78, 205, 196, 0.5)');
       expect(styles['color']).toBe('var(--accent-blue)');
     });
   });
