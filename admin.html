@@ -138,6 +138,7 @@
 
         // Load and display guests
         function loadGuests() {
+            cleanPastGuests();
             const guests = getGuests();
             const tbody = document.getElementById('guestTableBody');
             const emptyState = document.getElementById('emptyState');

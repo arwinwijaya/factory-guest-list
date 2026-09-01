@@ -75,7 +75,7 @@ function addGuest(guestData) {
     // Determine status based on date:
     // - Today → 'active'
     // - Future → 'ongoing'
-    const today = new Date().toISOString().split('T')[0];
+    const today = getTodayStr();
     const status = guestData.tanggal === today ? 'active' : 'ongoing';
     
     const newGuest = {
@@ -120,9 +120,24 @@ function getGuestById(id) {
 }
 
 function getTodayGuests() {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getTodayStr();
     const guests = getGuests();
     return guests.filter(g => g.tanggal === today);
+}
+
+/**
+ * Remove guests whose visit date is before today
+ * @returns {number} Number of guests removed
+ */
+function cleanPastGuests() {
+    const today = getTodayStr();
+    const guests = getGuests();
+    const remaining = guests.filter(g => g.tanggal >= today);
+    const removedCount = guests.length - remaining.length;
+    if (removedCount > 0) {
+        saveGuests(remaining);
+    }
+    return removedCount;
 }
 
 function getGuestsByStatus(status) {
@@ -133,6 +148,16 @@ function getGuestsByStatus(status) {
 // ============================================
 // UTILITY FUNCTIONS
 // ============================================
+
+/**
+ * Get today's date string in YYYY-MM-DD format (local timezone)
+ * @param {Date} [date] - Optional Date object for testing
+ * @returns {string} Today's date string
+ */
+function getTodayStr(date) {
+    const d = date || new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
 
 function generateId() {
     return 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);

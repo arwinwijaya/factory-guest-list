@@ -59,6 +59,7 @@
     <script>
         // Load and display guests on board
         function loadBoard() {
+            cleanPastGuests();
             const guests = getGuests();
             const tbody = document.getElementById('boardTableBody');
             const emptyState = document.getElementById('boardEmpty');

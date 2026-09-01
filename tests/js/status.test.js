@@ -48,6 +48,13 @@ function getTodayStr() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+// Helper to get a past date string (yesterday)
+function getYesterdayStr() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 // Helper to get a future date string (tomorrow)
 function getTomorrowStr() {
   const d = new Date();
@@ -419,5 +426,77 @@ describe('Integration: display.html uses new status values', () => {
     expect(displayHtml).not.toContain("'menunggu'");
     expect(displayHtml).not.toContain("'meeting'");
     expect(displayHtml).not.toContain("'selesai'");
+  });
+});
+
+// ============================================
+// Cycle 6: getTodayStr helper uses local timezone
+// ============================================
+describe('Cycle 6: getTodayStr helper uses local timezone', () => {
+  it('getTodayStr returns today in YYYY-MM-DD format', () => {
+    const env = createAppEnv();
+    const result = env.window.getTodayStr();
+    const d = new Date();
+    const expected = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    expect(result).toBe(expected);
+  });
+
+  it('getTodayStr accepts optional Date argument for testing', () => {
+    const env = createAppEnv();
+    const testDate = new Date(2025, 0, 15); // Jan 15, 2025
+    const result = env.window.getTodayStr(testDate);
+    expect(result).toBe('2025-01-15');
+  });
+});
+
+// ============================================
+// Cycle 7: cleanPastGuests removes past-dated guests
+// ============================================
+describe('Cycle 7: cleanPastGuests removes past-dated guests', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+  });
+
+  it('Given guests with past, today, and future dates, When cleanPastGuests is called, Then only today and future guests remain', () => {
+    // Seed with past, today, and future guests
+    env.window.saveGuests([
+      { id: 'past1', nama: 'Past Guest', tanggal: getYesterdayStr(), perusahaan: 'PT', keperluan: 'X', status: 'active', createdAt: new Date().toISOString() },
+      { id: 'today1', nama: 'Today Guest', tanggal: getTodayStr(), perusahaan: 'PT', keperluan: 'X', status: 'active', createdAt: new Date().toISOString() },
+      { id: 'future1', nama: 'Future Guest', tanggal: getTomorrowStr(), perusahaan: 'PT', keperluan: 'X', status: 'ongoing', createdAt: new Date().toISOString() },
+    ]);
+
+    const removedCount = env.window.cleanPastGuests();
+
+    expect(removedCount).toBe(1);
+    const remaining = env.window.getGuests();
+    expect(remaining.length).toBe(2);
+    expect(remaining.find(g => g.id === 'past1')).toBeUndefined();
+    expect(remaining.find(g => g.id === 'today1')).toBeDefined();
+    expect(remaining.find(g => g.id === 'future1')).toBeDefined();
+  });
+
+  it('Given no past guests, When cleanPastGuests is called, Then no guests are removed', () => {
+    env.window.saveGuests([
+      { id: 'today1', nama: 'Today', tanggal: getTodayStr(), perusahaan: 'PT', keperluan: 'X', status: 'active', createdAt: new Date().toISOString() },
+      { id: 'future1', nama: 'Future', tanggal: getTomorrowStr(), perusahaan: 'PT', keperluan: 'X', status: 'ongoing', createdAt: new Date().toISOString() },
+    ]);
+
+    const removedCount = env.window.cleanPastGuests();
+
+    expect(removedCount).toBe(0);
+    expect(env.window.getGuests().length).toBe(2);
+  });
+
+  it('Given only past guests, When cleanPastGuests is called, Then all guests are removed', () => {
+    env.window.saveGuests([
+      { id: 'past1', nama: 'Past1', tanggal: getYesterdayStr(), perusahaan: 'PT', keperluan: 'X', status: 'active', createdAt: new Date().toISOString() },
+    ]);
+
+    const removedCount = env.window.cleanPastGuests();
+
+    expect(removedCount).toBe(1);
+    expect(env.window.getGuests().length).toBe(0);
   });
 });
