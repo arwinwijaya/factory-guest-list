@@ -71,53 +71,21 @@ Aplikasi mendukung tampilan:
 
 ## 📦 Installation
 
-```bash
-# Clone repository
-git clone https://github.com/arwinwijaya/factory-guest-list.git
+1. Download file ZIP aplikasi
+2. Ekstrak file ZIP ke folder yang diinginkan
+3. Buka file `login.html` di browser
+4. Login dengan kredensial default (`admin` / `admin123`)
 
-# Masuk ke folder project
-cd factory-guest-list
-
-# Install dependencies (untuk testing)
-npm install
-
-# Jalankan tests
-npx vitest run
-```
-
-## 🚀 Deployment
-
-### Static Hosting (Recommended)
-
-1. Upload semua file ke web hosting (Netlify, Vercel, GitHub Pages)
-2. Pastikan file berikut ada di root:
-   - `login.html`
-   - `admin.html`
-   - `display.html`
-   - `css/style.css`
-   - `js/app.js`
-   - `img/GGF.png`
-
-### Local Development
-
-```bash
-# Menggunakan Python
-python -m http.server 8000
-
-# Menggunakan Node.js
-npx serve .
-
-# Buka browser
-http://localhost:8000/login.html
-```
+📖 **Panduan lengkap:** Lihat [docs/SETUP.md](docs/SETUP.md)
 
 ## 📖 Dokumentasi
 
-Lihat `WORK-INSTRUCTION.md` untuk panduan lengkap:
-- Flow Process
-- Work Instructions
-- Troubleshooting
-- Version History
+| Dokumen | Deskripsi |
+|---------|----------|
+| [SETUP.md](docs/SETUP.md) | Panduan instalasi dan setup |
+| [WORK-INSTRUCTION.md](WORK-INSTRUCTION.md) | Panduan kerja dan flow proses |
+| [API.md](docs/API.md) | Dokumentasi fungsi JavaScript |
+| [CHANGELOG.md](CHANGELOG.md) | Riwayat perubahan versi |
 
 ## 🧪 Testing
 
