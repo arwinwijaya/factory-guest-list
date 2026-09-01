@@ -191,6 +191,14 @@ describe('Theme Rebranding - GGF Brand Colors', () => {
     });
   });
 
+  describe('Navbar links aligned to the right', () => {
+    it('.navbar .nav-links should have margin-left: auto', () => {
+      const styles = getSelectorStyles(cssContent, '.navbar .nav-links');
+      expect(styles).not.toBeNull();
+      expect(styles['margin-left']).toBe('auto');
+    });
+  });
+
   describe('Refactor: old status styles removed', () => {
     it('should not contain .status-menunggu', () => {
       expect(cssContent).not.toContain('.status-menunggu');

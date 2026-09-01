@@ -565,10 +565,11 @@ body {
     margin: 0 auto 16px;
 }
 
-.nav-links {
+.navbar .nav-links {
     display: flex;
     gap: 24px;
     align-items: center;
+    margin-left: auto;
 }
 
 .nav-link {
