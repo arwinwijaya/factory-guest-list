@@ -11,6 +11,79 @@ const DEFAULT_CREDENTIALS = {
 };
 
 // ============================================
+// UX ENHANCEMENT STATE
+// ============================================
+
+var guestListState = {
+    searchQuery: '',
+    currentPage: 1,
+    itemsPerPage: 10,
+    filteredGuests: [],
+    totalGuests: 0
+};
+
+// ============================================
+// SEARCH FUNCTIONS
+// ============================================
+
+/**
+ * Search guests by query across all text fields
+ * @param {string} query - Search query (min 2 chars to filter)
+ * @returns {Array} Filtered guests
+ */
+function searchGuests(query) {
+    const guests = getGuests();
+    
+    // If query is empty or less than 2 chars, return all guests
+    if (!query || query.length < 2) {
+        return guests;
+    }
+    
+    const lowerQuery = query.toLowerCase();
+    
+    return guests.filter(guest => {
+        const fields = [
+            guest.nama || '',
+            guest.perusahaan || '',
+            guest.keperluan || '',
+            guest.tanggal || '',
+            guest.status || ''
+        ];
+        
+        return fields.some(field => 
+            field.toLowerCase().includes(lowerQuery)
+        );
+    });
+}
+
+/**
+ * Highlight matching text in a string
+ * @param {string} text - Original text
+ * @param {string} query - Search query to highlight
+ * @returns {string} Text with matches wrapped in <b> tags
+ */
+function highlightText(text, query) {
+    if (!query || !text) return text;
+    
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<b>$1</b>');
+}
+
+/**
+ * Debounce function to limit execution rate
+ * @param {Function} func - Function to debounce
+ * @param {number} delay - Delay in milliseconds
+ * @returns {Function} Debounced function
+ */
+function debounce(func, delay) {
+    let timeoutId;
+    return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+// ============================================
 // AUTH FUNCTIONS
 // ============================================
 

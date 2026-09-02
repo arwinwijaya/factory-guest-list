@@ -426,6 +426,133 @@ describe('Integration: display.html uses new status values', () => {
 });
 
 // ============================================
+// UX Enhancement: State Object & Search Functions
+// =============================================
+describe('UX Enhancement: guestListState object', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+  });
+
+  it('guestListState exists with default values', () => {
+    expect(env.window.guestListState).toBeDefined();
+    expect(env.window.guestListState.searchQuery).toBe('');
+    expect(env.window.guestListState.currentPage).toBe(1);
+    expect(env.window.guestListState.itemsPerPage).toBe(10);
+    expect(env.window.guestListState.filteredGuests).toEqual([]);
+    expect(env.window.guestListState.totalGuests).toBe(0);
+  });
+});
+
+describe('UX Enhancement: searchGuests function', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+    // Seed with test guests
+    env.window.saveGuests([
+      { id: 'g1', nama: 'John Doe', tanggal: '2025-09-15', perusahaan: 'PT Maju', keperluan: 'Meeting', status: 'active', createdAt: new Date().toISOString() },
+      { id: 'g2', nama: 'Jane Smith', tanggal: '2025-09-16', perusahaan: 'CV Berkah', keperluan: 'Kunjungan', status: 'ongoing', createdAt: new Date().toISOString() },
+      { id: 'g3', nama: 'Budi Santoso', tanggal: '2025-09-17', perusahaan: 'PT Jaya', keperluan: 'Audit John', status: 'active', createdAt: new Date().toISOString() },
+    ]);
+  });
+
+  it('Given array of guests, When searchGuests("john") called, Then only guests with "john" in any field returned', () => {
+    const results = env.window.searchGuests('john');
+    expect(results.length).toBe(2);
+    expect(results.find(g => g.id === 'g1')).toBeDefined();
+    expect(results.find(g => g.id === 'g3')).toBeDefined();
+  });
+
+  it('Given array of guests, When searchGuests("j") called (1 char), Then all guests returned (min 2 chars)', () => {
+    const results = env.window.searchGuests('j');
+    expect(results.length).toBe(3);
+  });
+
+  it('Given array of guests, When searchGuests("JOHN") called, Then guest "John Doe" returned (case-insensitive)', () => {
+    const results = env.window.searchGuests('JOHN');
+    expect(results.length).toBe(2);
+    expect(results.find(g => g.id === 'g1')).toBeDefined();
+  });
+
+  it('Given empty query, When searchGuests("") called, Then all guests returned', () => {
+    const results = env.window.searchGuests('');
+    expect(results.length).toBe(3);
+  });
+
+  it('Given query with no matches, When searchGuests("xyz123") called, Then empty array returned', () => {
+    const results = env.window.searchGuests('xyz123');
+    expect(results.length).toBe(0);
+  });
+});
+
+describe('UX Enhancement: highlightText function', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+  });
+
+  it('Given text "John Doe" and query "john", When highlightText() called, Then returns "<b>John</b> Doe"', () => {
+    const result = env.window.highlightText('John Doe', 'john');
+    expect(result).toBe('<b>John</b> Doe');
+  });
+
+  it('Given text "John Doe" and query "doe", When highlightText() called, Then returns "John <b>Doe</b>"', () => {
+    const result = env.window.highlightText('John Doe', 'doe');
+    expect(result).toBe('John <b>Doe</b>');
+  });
+
+  it('Given text "John Doe" and empty query, When highlightText() called, Then returns original text', () => {
+    const result = env.window.highlightText('John Doe', '');
+    expect(result).toBe('John Doe');
+  });
+
+  it('Given text "John Doe" and query "xyz", When highlightText() called, Then returns original text', () => {
+    const result = env.window.highlightText('John Doe', 'xyz');
+    expect(result).toBe('John Doe');
+  });
+});
+
+describe('UX Enhancement: debounce function', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('Given a function, When debounce wraps it, Then it delays execution', () => {
+    const fn = vi.fn();
+    const debouncedFn = env.window.debounce(fn, 300);
+
+    debouncedFn();
+    expect(fn).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(300);
+    expect(fn).toHaveBeenCalledOnce();
+  });
+
+  it('Given rapid calls, When debounce wraps function, Then only last call executes', () => {
+    const fn = vi.fn();
+    const debouncedFn = env.window.debounce(fn, 300);
+
+    debouncedFn('a');
+    debouncedFn('b');
+    debouncedFn('c');
+
+    vi.advanceTimersByTime(300);
+    expect(fn).toHaveBeenCalledOnce();
+    expect(fn).toHaveBeenCalledWith('c');
+  });
+});
+
+// ============================================
 // Cycle 6: getTodayStr helper uses local timezone
 // ============================================
 describe('Cycle 6: getTodayStr helper uses local timezone', () => {
