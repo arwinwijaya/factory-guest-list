@@ -1,0 +1,61 @@
+{
+  "header": {
+    "plan_dir": "docs/pocket/plans/2025-09-02-code-quality-optimization",
+    "plan_type": "flat",
+    "status": "DONE",
+    "date_started": "2026-09-02",
+    "date_completed": "2026-09-02",
+    "baseline_sha": "9310ea047ef84497568e4f575cd868537d1f435c",
+    "pipeline": 4
+  },
+  "phases": [
+    {
+      "order": 1,
+      "file": "execution-plan/index.md",
+      "status": "DONE",
+      "tasks": [
+        {
+          "id": "T1",
+          "name": "Audit & Dead Code Identification",
+          "file": "execution-plan/tasks/T1-audit-dead-code-identification.md",
+          "status": "DONE",
+          "done_sha": "c9cbfa51114c183d43b799aa77b53bb06363ffe5"
+        },
+        {
+          "id": "T2",
+          "name": "Dead Code Removal & showNotification Migration",
+          "file": "execution-plan/tasks/T2-dead-code-removal-shownotification-migration.md",
+          "status": "DONE",
+          "done_sha": "682423a35135fa85015af94fccc0ffa0e84ebacf"
+        },
+        {
+          "id": "T3",
+          "name": "CSS Cleanup",
+          "file": "execution-plan/tasks/T3-css-cleanup.md",
+          "status": "WAITING"
+        },
+        {
+          "id": "T4",
+          "name": "Code Organization & Reorganization",
+          "file": "execution-plan/tasks/T4-code-organization-reorganization.md",
+          "status": "DONE",
+          "done_sha": "95f0068303cb7afee87b5e75310a6831346da44f"
+        },
+        {
+          "id": "T5",
+          "name": "Selective Extraction — Guest Data Domain",
+          "file": "execution-plan/tasks/T5-selective-extraction-guest-data-domain.md",
+          "status": "DONE",
+          "done_sha": "b0b2cabe0836545c8a69d1efc0aa3656d76f760a"
+        },
+        {
+          "id": "T6",
+          "name": "Quality Metrics & Final Verification",
+          "file": "execution-plan/tasks/T6-quality-metrics-final-verification.md",
+          "status": "DONE",
+          "done_sha": "a39e4b9607df7712332a56ad8a2537c1161d3622"
+        }
+      ]
+    }
+  ]
+}
