@@ -84,6 +84,69 @@ function debounce(func, delay) {
 }
 
 // ============================================
+// PAGINATION FUNCTIONS
+// ============================================
+
+/**
+ * Paginate an array of guests
+ * @param {Array} guests - Array of guest objects
+ * @param {number} page - Current page (1-indexed)
+ * @param {number|string} perPage - Items per page or 'All'
+ * @returns {Object} { items, totalPages, currentPage, totalItems }
+ */
+function paginateGuests(guests, page, perPage) {
+    const totalItems = guests.length;
+    
+    // Handle 'All' option
+    if (perPage === 'All') {
+        return {
+            items: guests,
+            totalPages: 1,
+            currentPage: 1,
+            totalItems
+        };
+    }
+    
+    const totalPages = Math.ceil(totalItems / perPage) || 0;
+    
+    // Ensure page is within bounds
+    const validPage = Math.max(1, Math.min(page, totalPages || 1));
+    
+    const startIndex = (validPage - 1) * perPage;
+    const endIndex = startIndex + perPage;
+    
+    return {
+        items: guests.slice(startIndex, endIndex),
+        totalPages,
+        currentPage: validPage,
+        totalItems
+    };
+}
+
+/**
+ * Change current page and trigger re-render
+ * @param {number} page - Target page number
+ */
+function changePage(page) {
+    guestListState.currentPage = page;
+    if (typeof renderGuestList === 'function') {
+        renderGuestList();
+    }
+}
+
+/**
+ * Change items per page and reset to page 1
+ * @param {number|string} count - Items per page or 'All'
+ */
+function changeItemsPerPage(count) {
+    guestListState.itemsPerPage = count;
+    guestListState.currentPage = 1;
+    if (typeof renderGuestList === 'function') {
+        renderGuestList();
+    }
+}
+
+// ============================================
 // AUTH FUNCTIONS
 // ============================================
 

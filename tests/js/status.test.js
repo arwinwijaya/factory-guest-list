@@ -426,6 +426,139 @@ describe('Integration: display.html uses new status values', () => {
 });
 
 // ============================================
+// UX Enhancement: Pagination Functions
+// =============================================
+describe('UX Enhancement: paginateGuests function', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+    // Seed with 25 test guests
+    const guests = Array.from({ length: 25 }, (_, i) => ({
+      id: `guest_${i + 1}`,
+      nama: `Guest ${i + 1}`,
+      tanggal: '2025-09-15',
+      perusahaan: 'PT Test',
+      keperluan: 'Testing',
+      status: 'active',
+      createdAt: new Date().toISOString()
+    }));
+    env.window.saveGuests(guests);
+  });
+
+  it('Given array of 25 guests, page 1, perPage 10, When paginateGuests called, Then first 10 guests returned', () => {
+    const result = env.window.paginateGuests(env.window.getGuests(), 1, 10);
+    expect(result.items.length).toBe(10);
+    expect(result.items[0].id).toBe('guest_1');
+    expect(result.items[9].id).toBe('guest_10');
+  });
+
+  it('Given array of 25 guests, page 2, perPage 10, When paginateGuests called, Then guests 11-20 returned', () => {
+    const result = env.window.paginateGuests(env.window.getGuests(), 2, 10);
+    expect(result.items.length).toBe(10);
+    expect(result.items[0].id).toBe('guest_11');
+    expect(result.items[9].id).toBe('guest_20');
+  });
+
+  it('Given array of 25 guests, page 3, perPage 10, When paginateGuests called, Then guests 21-25 returned', () => {
+    const result = env.window.paginateGuests(env.window.getGuests(), 3, 10);
+    expect(result.items.length).toBe(5);
+    expect(result.items[0].id).toBe('guest_21');
+    expect(result.items[4].id).toBe('guest_25');
+  });
+
+  it('Given array of 25 guests, page 1, perPage "All", When paginateGuests called, Then all 25 guests returned', () => {
+    const result = env.window.paginateGuests(env.window.getGuests(), 1, 'All');
+    expect(result.items.length).toBe(25);
+    expect(result.totalPages).toBe(1);
+  });
+
+  it('Given 25 guests, When paginateGuests called, Then returns correct metadata', () => {
+    const result = env.window.paginateGuests(env.window.getGuests(), 1, 10);
+    expect(result.totalPages).toBe(3);
+    expect(result.currentPage).toBe(1);
+    expect(result.totalItems).toBe(25);
+  });
+
+  it('Given page > totalPages, When paginateGuests called, Then returns last page', () => {
+    const result = env.window.paginateGuests(env.window.getGuests(), 10, 10);
+    expect(result.currentPage).toBe(3);
+    expect(result.items.length).toBe(5);
+  });
+
+  it('Given empty array, When paginateGuests called, Then returns empty result', () => {
+    const result = env.window.paginateGuests([], 1, 10);
+    expect(result.items.length).toBe(0);
+    expect(result.totalPages).toBe(0);
+    expect(result.totalItems).toBe(0);
+  });
+});
+
+describe('UX Enhancement: changePage function', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+    const guests = Array.from({ length: 25 }, (_, i) => ({
+      id: `guest_${i + 1}`,
+      nama: `Guest ${i + 1}`,
+      tanggal: '2025-09-15',
+      perusahaan: 'PT Test',
+      keperluan: 'Testing',
+      status: 'active',
+      createdAt: new Date().toISOString()
+    }));
+    env.window.saveGuests(guests);
+    env.window.guestListState.itemsPerPage = 10;
+  });
+
+  it('Given page 1, When changePage(2) called, Then currentPage becomes 2', () => {
+    env.window.changePage(2);
+    expect(env.window.guestListState.currentPage).toBe(2);
+  });
+
+  it('Given page 2, When changePage(1) called, Then currentPage becomes 1', () => {
+    env.window.guestListState.currentPage = 2;
+    env.window.changePage(1);
+    expect(env.window.guestListState.currentPage).toBe(1);
+  });
+});
+
+describe('UX Enhancement: changeItemsPerPage function', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+    const guests = Array.from({ length: 25 }, (_, i) => ({
+      id: `guest_${i + 1}`,
+      nama: `Guest ${i + 1}`,
+      tanggal: '2025-09-15',
+      perusahaan: 'PT Test',
+      keperluan: 'Testing',
+      status: 'active',
+      createdAt: new Date().toISOString()
+    }));
+    env.window.saveGuests(guests);
+  });
+
+  it('Given default 10, When changeItemsPerPage(25) called, Then itemsPerPage becomes 25', () => {
+    env.window.changeItemsPerPage(25);
+    expect(env.window.guestListState.itemsPerPage).toBe(25);
+  });
+
+  it('Given itemsPerPage changed, When changeItemsPerPage called, Then currentPage resets to 1', () => {
+    env.window.guestListState.currentPage = 3;
+    env.window.changeItemsPerPage(25);
+    expect(env.window.guestListState.currentPage).toBe(1);
+  });
+
+  it('Given "All" selected, When changeItemsPerPage("All") called, Then itemsPerPage becomes "All"', () => {
+    env.window.changeItemsPerPage('All');
+    expect(env.window.guestListState.itemsPerPage).toBe('All');
+  });
+});
+
+// ============================================
 // UX Enhancement: State Object & Search Functions
 // =============================================
 describe('UX Enhancement: guestListState object', () => {
