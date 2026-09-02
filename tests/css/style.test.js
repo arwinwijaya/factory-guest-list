@@ -213,3 +213,157 @@ describe('Theme Rebranding - GGF Brand Colors', () => {
     });
   });
 });
+
+describe('UX Enhancement - Search Bar Styles', () => {
+  it('.search-container should exist with display: flex', () => {
+    const styles = getSelectorStyles(cssContent, '.search-container');
+    expect(styles).not.toBeNull();
+    expect(styles['display']).toBe('flex');
+  });
+
+  it('.search-container should have align-items: center', () => {
+    const styles = getSelectorStyles(cssContent, '.search-container');
+    expect(styles).not.toBeNull();
+    expect(styles['align-items']).toBe('center');
+  });
+
+  it('.search-input should have border style', () => {
+    const styles = getSelectorStyles(cssContent, '.search-input');
+    expect(styles).not.toBeNull();
+    expect(styles['border']).toBeDefined();
+  });
+
+  it('.search-input should have border-radius: 4px', () => {
+    const styles = getSelectorStyles(cssContent, '.search-input');
+    expect(styles).not.toBeNull();
+    expect(styles['border-radius']).toBe('4px');
+  });
+
+  it('.search-icon should have color #999999', () => {
+    const styles = getSelectorStyles(cssContent, '.search-icon');
+    expect(styles).not.toBeNull();
+    expect(styles['color']).toBe('#999999');
+  });
+});
+
+describe('UX Enhancement - Pagination Styles', () => {
+  it('.pagination-container should exist with display: flex', () => {
+    const styles = getSelectorStyles(cssContent, '.pagination-container');
+    expect(styles).not.toBeNull();
+    expect(styles['display']).toBe('flex');
+  });
+
+  it('.pagination-container should have justify-content: space-between', () => {
+    const styles = getSelectorStyles(cssContent, '.pagination-container');
+    expect(styles).not.toBeNull();
+    expect(styles['justify-content']).toBe('space-between');
+  });
+
+  it('.pagination-info should have font-size: 12px', () => {
+    const styles = getSelectorStyles(cssContent, '.pagination-info');
+    expect(styles).not.toBeNull();
+    expect(styles['font-size']).toBe('12px');
+  });
+
+  it('.pagination-controls should have display: flex', () => {
+    const styles = getSelectorStyles(cssContent, '.pagination-controls');
+    expect(styles).not.toBeNull();
+    expect(styles['display']).toBe('flex');
+  });
+
+  it('.page-btn.active should have border style with primary color', () => {
+    const styles = getSelectorStyles(cssContent, '.page-btn.active');
+    expect(styles).not.toBeNull();
+    expect(styles['border']).toBeDefined();
+  });
+});
+
+describe('UX Enhancement - Modal Styles', () => {
+  it('.modal-overlay should exist with position: fixed', () => {
+    const styles = getSelectorStyles(cssContent, '.modal-overlay');
+    expect(styles).not.toBeNull();
+    expect(styles['position']).toBe('fixed');
+  });
+
+  it('.modal-overlay should have background with opacity', () => {
+    const styles = getSelectorStyles(cssContent, '.modal-overlay');
+    expect(styles).not.toBeNull();
+    expect(styles['background']).toBeDefined();
+  });
+
+  it('.modal-container should have border-radius: 4px', () => {
+    const styles = getSelectorStyles(cssContent, '.modal-container');
+    expect(styles).not.toBeNull();
+    expect(styles['border-radius']).toBe('4px');
+  });
+
+  it('.modal-container should have box-shadow', () => {
+    const styles = getSelectorStyles(cssContent, '.modal-container');
+    expect(styles).not.toBeNull();
+    expect(styles['box-shadow']).toBeDefined();
+  });
+
+  it('.modal-header should have border-bottom', () => {
+    const styles = getSelectorStyles(cssContent, '.modal-header');
+    expect(styles).not.toBeNull();
+    expect(styles['border-bottom']).toBeDefined();
+  });
+
+  it('.modal-footer should have display: flex', () => {
+    const styles = getSelectorStyles(cssContent, '.modal-footer');
+    expect(styles).not.toBeNull();
+    expect(styles['display']).toBe('flex');
+  });
+
+  it('.modal-footer should have justify-content: flex-end', () => {
+    const styles = getSelectorStyles(cssContent, '.modal-footer');
+    expect(styles).not.toBeNull();
+    expect(styles['justify-content']).toBe('flex-end');
+  });
+});
+
+describe('UX Enhancement - Loading Spinner Styles', () => {
+  it('.loading-container should exist with display: flex', () => {
+    const styles = getSelectorStyles(cssContent, '.loading-container');
+    expect(styles).not.toBeNull();
+    expect(styles['display']).toBe('flex');
+  });
+
+  it('.loading-container should have justify-content: center', () => {
+    const styles = getSelectorStyles(cssContent, '.loading-container');
+    expect(styles).not.toBeNull();
+    expect(styles['justify-content']).toBe('center');
+  });
+
+  it('.loading-spinner should have width: 32px', () => {
+    const styles = getSelectorStyles(cssContent, '.loading-spinner');
+    expect(styles).not.toBeNull();
+    expect(styles['width']).toBe('32px');
+  });
+
+  it('.loading-spinner should have height: 32px', () => {
+    const styles = getSelectorStyles(cssContent, '.loading-spinner');
+    expect(styles).not.toBeNull();
+    expect(styles['height']).toBe('32px');
+  });
+
+  it('.loading-spinner should have border-radius: 50%', () => {
+    const styles = getSelectorStyles(cssContent, '.loading-spinner');
+    expect(styles).not.toBeNull();
+    expect(styles['border-radius']).toBe('50%');
+  });
+});
+
+describe('UX Enhancement - Table Controls Styles', () => {
+  it('.table-controls should exist with display: flex', () => {
+    const styles = getSelectorStyles(cssContent, '.table-controls');
+    expect(styles).not.toBeNull();
+    expect(styles['display']).toBe('flex');
+  });
+
+  it('.table-controls should have justify-content: space-between', () => {
+    const styles = getSelectorStyles(cssContent, '.table-controls');
+    expect(styles).not.toBeNull();
+    expect(styles['justify-content']).toBe('space-between');
+  });
+});
