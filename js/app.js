@@ -11,9 +11,10 @@ const DEFAULT_CREDENTIALS = {
 };
 
 // ============================================
-// UX ENHANCEMENT STATE
+// === UX ENHANCEMENT ===
 // ============================================
 
+// --- State ---
 var guestListState = {
     searchQuery: '',
     currentPage: 1,
@@ -22,10 +23,7 @@ var guestListState = {
     totalGuests: 0
 };
 
-// ============================================
-// SEARCH FUNCTIONS
-// ============================================
-
+// --- Search ---
 /**
  * Search guests by query across all text fields
  * @param {string} query - Search query (min 2 chars to filter)
@@ -83,10 +81,7 @@ function debounce(func, delay) {
     };
 }
 
-// ============================================
-// PAGINATION FUNCTIONS
-// ============================================
-
+// --- Pagination ---
 /**
  * Paginate an array of guests
  * @param {Array} guests - Array of guest objects
@@ -146,10 +141,7 @@ function changeItemsPerPage(count) {
     }
 }
 
-// ============================================
-// MODAL FUNCTIONS
-// ============================================
-
+// --- Modal ---
 var _pendingDeleteId = null;
 
 /**
@@ -214,10 +206,7 @@ function confirmDelete() {
     }
 }
 
-// ============================================
-// LOADING STATE FUNCTIONS
-// ============================================
-
+// --- Loading ---
 /**
  * Show loading spinner in the table area
  */
@@ -238,10 +227,7 @@ function hideLoading() {
     }
 }
 
-// ============================================
-// RENDER FUNCTIONS
-// ============================================
-
+// --- Render ---
 /**
  * Render the guest list with search, pagination, and empty states
  */
@@ -403,7 +389,7 @@ function renderEmptyState(type) {
 }
 
 // ============================================
-// AUTH FUNCTIONS
+// === AUTH ===
 // ============================================
 
 function login(username, password) {
@@ -443,7 +429,7 @@ function checkAuth() {
 }
 
 // ============================================
-// GUEST DATA FUNCTIONS
+// === GUEST DATA ===
 // ============================================
 
 function getGuests() {
@@ -526,7 +512,8 @@ function cleanPastGuests() {
     return removedCount;
 }
 
-
+// ============================================
+// === UTILITIES ===
 // ============================================
 
 /**
@@ -570,7 +557,7 @@ function getCurrentDate() {
 }
 
 // ============================================
-// STATUS HELPERS
+// === STATUS HELPERS ===
 // ============================================
 
 function getStatusLabel(status) {
@@ -597,7 +584,7 @@ function changeStatus(id, newStatus) {
 }
 
 // ============================================
-// EXPORT/IMPORT FUNCTIONS
+// === EXPORT/IMPORT ===
 // ============================================
 
 function exportToJSON() {
@@ -648,45 +635,7 @@ function importFromJSON(file) {
 }
 
 // ============================================
-// NOTIFICATION FUNCTIONS
-// ============================================
-
-/**
- * Show a notification message with auto-dismiss
- * @param {string} message - Notification message to display
- */
-function showNotification(message) {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: var(--primary-color);
-        color: #ffffff;
-        padding: 12px 24px;
-        border-radius: 4px;
-        font-family: var(--font-mono);
-        font-size: 14px;
-        font-weight: bold;
-        z-index: 1000;
-        animation: slideIn 0.3s ease-out;
-    `;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease-in';
-        setTimeout(() => {
-            notification.remove();
-        }, 300);
-    }, 3000);
-}
-
-// ============================================
-// SORT FUNCTIONS
+// === SORT ===
 // ============================================
 
 /**
@@ -744,7 +693,7 @@ function sortGuestsByDate(guests, todayStr) {
 }
 
 // ============================================
-// DISPLAY HELPERS
+// === DISPLAY ===
 // ============================================
 
 function createGuestRow(guest, isAdmin = false) {
@@ -801,9 +750,7 @@ function createGuestRow(guest, isAdmin = false) {
     return row;
 }
 
-// ============================================
-// INITIALIZATION
-// ============================================
+// --- Initialization ---
 
 function initClock() {
     const clockElement = document.getElementById('clock');
@@ -837,4 +784,42 @@ function stopAutoRefresh() {
         clearInterval(refreshInterval);
         refreshInterval = null;
     }
+}
+
+// ============================================
+// === NOTIFICATION ===
+// ============================================
+
+/**
+ * Show a notification message with auto-dismiss
+ * @param {string} message - Notification message to display
+ */
+function showNotification(message) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--primary-color);
+        color: #ffffff;
+        padding: 12px 24px;
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 14px;
+        font-weight: bold;
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 3000);
 }

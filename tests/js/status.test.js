@@ -1102,6 +1102,87 @@ describe('Dead Code: deprecated.js contains dead code functions', () => {
 });
 
 // ============================================
+// Code Organization: Domain Headers
+// ============================================
+describe('Code Organization: Functions grouped by domain headers', () => {
+  it('Given app.js is loaded, When file is parsed, Then domain headers exist in consistent format', () => {
+    const appJs = readFileSync(resolve(root, 'js/app.js'), 'utf-8');
+
+    const expectedDomains = [
+      'UX ENHANCEMENT',
+      'AUTH',
+      'GUEST DATA',
+      'UTILITIES',
+      'STATUS HELPERS',
+      'EXPORT/IMPORT',
+      'SORT',
+      'DISPLAY',
+    ];
+
+    expectedDomains.forEach(domain => {
+      const headerPattern = new RegExp(`// === ${domain} ===`);
+      expect(appJs).toMatch(headerPattern);
+    });
+  });
+
+  it('Given app.js is loaded, When file is parsed, Then all domain headers follow consistent format', () => {
+    const appJs = readFileSync(resolve(root, 'js/app.js'), 'utf-8');
+
+    // Match all domain headers with format: // === DOMAIN NAME ===
+    const headerRegex = /\/\/ === [A-Z \/]+ ===/g;
+    const headers = appJs.match(headerRegex);
+
+    expect(headers).not.toBeNull();
+    expect(headers.length).toBeGreaterThanOrEqual(8);
+  });
+});
+
+// ============================================
+// Code Organization: Frequency Ordering
+// ============================================
+describe('Code Organization: Frequency ordering within groups', () => {
+  it('Given Guest Data group, When file is parsed, Then getGuests() appears before getGuestById()', () => {
+    const appJs = readFileSync(resolve(root, 'js/app.js'), 'utf-8');
+
+    // Find the GUEST DATA section
+    const guestDataStart = appJs.indexOf('// === GUEST DATA ===');
+    expect(guestDataStart).toBeGreaterThan(-1);
+
+    // Find the next domain header (end of GUEST DATA section)
+    const nextSectionMatch = appJs.substring(guestDataStart + 1).match(/\/\/ === [A-Z \/]+ ===/);
+    const guestDataEnd = nextSectionMatch ? guestDataStart + 1 + nextSectionMatch.index : appJs.length;
+
+    const guestDataSection = appJs.substring(guestDataStart, guestDataEnd);
+
+    const getGuestsPos = guestDataSection.indexOf('function getGuests(');
+    const getGuestByIdPos = guestDataSection.indexOf('function getGuestById(');
+
+    expect(getGuestsPos).toBeGreaterThan(-1);
+    expect(getGuestByIdPos).toBeGreaterThan(-1);
+    expect(getGuestsPos).toBeLessThan(getGuestByIdPos);
+  });
+
+  it('Given UX Enhancement group, When file is parsed, Then searchGuests() appears before renderGuestList()', () => {
+    const appJs = readFileSync(resolve(root, 'js/app.js'), 'utf-8');
+
+    const uxStart = appJs.indexOf('// === UX ENHANCEMENT ===');
+    expect(uxStart).toBeGreaterThan(-1);
+
+    const nextSectionMatch = appJs.substring(uxStart + 1).match(/\/\/ === [A-Z \/]+ ===/);
+    const uxEnd = nextSectionMatch ? uxStart + 1 + nextSectionMatch.index : appJs.length;
+
+    const uxSection = appJs.substring(uxStart, uxEnd);
+
+    const searchPos = uxSection.indexOf('function searchGuests(');
+    const renderPos = uxSection.indexOf('function renderGuestList(');
+
+    expect(searchPos).toBeGreaterThan(-1);
+    expect(renderPos).toBeGreaterThan(-1);
+    expect(searchPos).toBeLessThan(renderPos);
+  });
+});
+
+// ============================================
 // Migration: showNotification exists in app.js
 // ============================================
 describe('Migration: showNotification exists in app.js', () => {
