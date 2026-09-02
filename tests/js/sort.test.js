@@ -6,10 +6,11 @@ import { resolve } from 'path';
 const root = resolve(import.meta.dirname, '../../');
 
 /**
- * Load app.js source code and evaluate it in a JSDOM environment.
+ * Load guest-data.js and app.js source code and evaluate it in a JSDOM environment.
  * Functions are exposed on window.
  */
 function createAppEnv() {
+  const guestDataJs = readFileSync(resolve(root, 'js/guest-data.js'), 'utf-8');
   const appJs = readFileSync(resolve(root, 'js/app.js'), 'utf-8');
 
   const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
@@ -18,6 +19,7 @@ function createAppEnv() {
   });
 
   const { window } = dom;
+  window.eval(guestDataJs);
   window.eval(appJs);
 
   return { window };
@@ -213,9 +215,9 @@ describe('Cycle 4: Display board uses sortGuestsByDate', () => {
     expect(displayHtml).not.toContain('dateB - dateA');
   });
 
-  it('sortGuestsByDate function is defined in app.js', () => {
-    const appJs = readFileSync(resolve(root, 'js/app.js'), 'utf-8');
-    expect(appJs).toContain('function sortGuestsByDate');
+  it('sortGuestsByDate function is defined in guest-data.js', () => {
+    const guestDataJs = readFileSync(resolve(root, 'js/guest-data.js'), 'utf-8');
+    expect(guestDataJs).toContain('function sortGuestsByDate');
   });
 });
 

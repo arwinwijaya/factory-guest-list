@@ -6,10 +6,11 @@ import { resolve } from 'path';
 const root = resolve(import.meta.dirname, '../../');
 
 /**
- * Load app.js source code and evaluate it in a JSDOM environment
+ * Load guest-data.js and app.js source code and evaluate it in a JSDOM environment
  * with a mocked localStorage. Functions are exposed on window.
  */
 function createAppEnv() {
+  const guestDataJs = readFileSync(resolve(root, 'js/guest-data.js'), 'utf-8');
   const appJs = readFileSync(resolve(root, 'js/app.js'), 'utf-8');
 
   const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
@@ -31,7 +32,8 @@ function createAppEnv() {
 
   Object.defineProperty(window, 'localStorage', { value: mockStorage, writable: true });
 
-  // Execute app.js via the window's eval to get function declarations on window
+  // Execute guest-data.js first, then app.js via the window's eval to get function declarations on window
+  window.eval(guestDataJs);
   window.eval(appJs);
 
   return {
@@ -1111,11 +1113,9 @@ describe('Code Organization: Functions grouped by domain headers', () => {
     const expectedDomains = [
       'UX ENHANCEMENT',
       'AUTH',
-      'GUEST DATA',
       'UTILITIES',
       'STATUS HELPERS',
       'EXPORT/IMPORT',
-      'SORT',
       'DISPLAY',
     ];
 
@@ -1133,7 +1133,7 @@ describe('Code Organization: Functions grouped by domain headers', () => {
     const headers = appJs.match(headerRegex);
 
     expect(headers).not.toBeNull();
-    expect(headers.length).toBeGreaterThanOrEqual(8);
+    expect(headers.length).toBeGreaterThanOrEqual(7);
   });
 });
 
@@ -1141,18 +1141,18 @@ describe('Code Organization: Functions grouped by domain headers', () => {
 // Code Organization: Frequency Ordering
 // ============================================
 describe('Code Organization: Frequency ordering within groups', () => {
-  it('Given Guest Data group, When file is parsed, Then getGuests() appears before getGuestById()', () => {
-    const appJs = readFileSync(resolve(root, 'js/app.js'), 'utf-8');
+  it('Given Guest Data group in guest-data.js, When file is parsed, Then getGuests() appears before getGuestById()', () => {
+    const guestDataJs = readFileSync(resolve(root, 'js/guest-data.js'), 'utf-8');
 
     // Find the GUEST DATA section
-    const guestDataStart = appJs.indexOf('// === GUEST DATA ===');
+    const guestDataStart = guestDataJs.indexOf('// === GUEST DATA ===');
     expect(guestDataStart).toBeGreaterThan(-1);
 
     // Find the next domain header (end of GUEST DATA section)
-    const nextSectionMatch = appJs.substring(guestDataStart + 1).match(/\/\/ === [A-Z \/]+ ===/);
-    const guestDataEnd = nextSectionMatch ? guestDataStart + 1 + nextSectionMatch.index : appJs.length;
+    const nextSectionMatch = guestDataJs.substring(guestDataStart + 1).match(/\/\/ === [A-Z \/]+ ===/);
+    const guestDataEnd = nextSectionMatch ? guestDataStart + 1 + nextSectionMatch.index : guestDataJs.length;
 
-    const guestDataSection = appJs.substring(guestDataStart, guestDataEnd);
+    const guestDataSection = guestDataJs.substring(guestDataStart, guestDataEnd);
 
     const getGuestsPos = guestDataSection.indexOf('function getGuests(');
     const getGuestByIdPos = guestDataSection.indexOf('function getGuestById(');
@@ -1197,5 +1197,39 @@ describe('Migration: showNotification exists in app.js', () => {
   it('Given app.js is loaded, When showNotification is called, Then function exists and executes without error', () => {
     expect(typeof env.window.showNotification).toBe('function');
     expect(() => env.window.showNotification('test message')).not.toThrow();
+  });
+});
+
+// ============================================
+// Extraction: Guest Data functions in guest-data.js
+// ============================================
+describe('Extraction: Guest Data functions in guest-data.js', () => {
+  it('Given guest-data.js is loaded, When getGuests() is called, Then function exists and executes without error', () => {
+    const guestDataJs = readFileSync(resolve(root, 'js/guest-data.js'), 'utf-8');
+
+    const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+      url: 'http://localhost/',
+      runScripts: 'dangerously',
+    });
+
+    const { window } = dom;
+    const store = {};
+
+    const mockStorage = {
+      getItem: vi.fn((key) => store[key] || null),
+      setItem: vi.fn((key, value) => { store[key] = value; }),
+      removeItem: vi.fn((key) => { delete store[key]; }),
+      clear: vi.fn(() => { Object.keys(store).forEach(k => delete store[k]); }),
+      get length() { return Object.keys(store).length; },
+      key: vi.fn((i) => Object.keys(store)[i] || null),
+    };
+
+    Object.defineProperty(window, 'localStorage', { value: mockStorage, writable: true });
+
+    window.eval(guestDataJs);
+
+    expect(typeof window.getGuests).toBe('function');
+    const result = window.getGuests();
+    expect(Array.isArray(result)).toBe(true);
   });
 });
