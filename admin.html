@@ -278,37 +278,6 @@
             input.value = '';
         }
 
-        // Show notification
-        function showNotification(message) {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: var(--primary-color);
-                color: #ffffff;
-                padding: 12px 24px;
-                border-radius: 4px;
-                font-family: var(--font-mono);
-                font-size: 14px;
-                font-weight: bold;
-                z-index: 1000;
-                animation: slideIn 0.3s ease-out;
-            `;
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            // Remove after 3 seconds
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease-in';
-                setTimeout(() => {
-                    notification.remove();
-                }, 300);
-            }, 3000);
-        }
-
         // Initial load
         loadGuests();
     </script>

@@ -1045,3 +1045,76 @@ describe('Cycle 7: cleanPastGuests removes past-dated guests', () => {
     expect(env.window.getGuests().length).toBe(0);
   });
 });
+
+// ============================================
+// Dead Code: deprecated.js contains dead code functions
+// ============================================
+describe('Dead Code: deprecated.js contains dead code functions', () => {
+  let deprecatedJs;
+
+  beforeEach(() => {
+    deprecatedJs = readFileSync(resolve(root, 'js/deprecated.js'), 'utf-8');
+  });
+
+  it('Given deprecated.js is loaded, When evaluated, Then formatDate function is accessible on window', () => {
+    const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+      url: 'http://localhost/',
+      runScripts: 'dangerously',
+    });
+
+    dom.window.eval(deprecatedJs);
+
+    expect(typeof dom.window.formatDate).toBe('function');
+  });
+
+  it('Given deprecated.js is loaded, When evaluated, Then formatTime function is accessible on window', () => {
+    const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+      url: 'http://localhost/',
+      runScripts: 'dangerously',
+    });
+
+    dom.window.eval(deprecatedJs);
+
+    expect(typeof dom.window.formatTime).toBe('function');
+  });
+
+  it('Given deprecated.js is loaded, When evaluated, Then getGuestsByStatus function is accessible on window', () => {
+    const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+      url: 'http://localhost/',
+      runScripts: 'dangerously',
+    });
+
+    dom.window.eval(deprecatedJs);
+
+    expect(typeof dom.window.getGuestsByStatus).toBe('function');
+  });
+
+  it('Given deprecated.js is loaded, When evaluated, Then getTodayGuests function is accessible on window', () => {
+    const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+      url: 'http://localhost/',
+      runScripts: 'dangerously',
+    });
+
+    dom.window.eval(deprecatedJs);
+
+    expect(typeof dom.window.getTodayGuests).toBe('function');
+  });
+});
+
+// ============================================
+// Migration: showNotification exists in app.js
+// ============================================
+describe('Migration: showNotification exists in app.js', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+    // Create notification container
+    env.document.body.innerHTML = '<div id="notificationContainer"></div>';
+  });
+
+  it('Given app.js is loaded, When showNotification is called, Then function exists and executes without error', () => {
+    expect(typeof env.window.showNotification).toBe('function');
+    expect(() => env.window.showNotification('test message')).not.toThrow();
+  });
+});

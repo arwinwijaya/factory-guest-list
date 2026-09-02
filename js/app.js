@@ -511,12 +511,6 @@ function getGuestById(id) {
     return guests.find(g => g.id === id) || null;
 }
 
-function getTodayGuests() {
-    const today = getTodayStr();
-    const guests = getGuests();
-    return guests.filter(g => g.tanggal === today);
-}
-
 /**
  * Remove guests whose visit date is before today
  * @returns {number} Number of guests removed
@@ -532,13 +526,7 @@ function cleanPastGuests() {
     return removedCount;
 }
 
-function getGuestsByStatus(status) {
-    const guests = getGuests();
-    return guests.filter(g => g.status === status);
-}
 
-// ============================================
-// UTILITY FUNCTIONS
 // ============================================
 
 /**
@@ -555,16 +543,6 @@ function generateId() {
     return 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 }
 
-function formatDate(dateString) {
-    const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    };
-    return new Date(dateString).toLocaleDateString('id-ID', options);
-}
-
 function formatDateShort(dateString) {
     const options = { 
         day: '2-digit', 
@@ -572,13 +550,6 @@ function formatDateShort(dateString) {
         year: 'numeric' 
     };
     return new Date(dateString).toLocaleDateString('id-ID', options);
-}
-
-function formatTime(dateString) {
-    return new Date(dateString).toLocaleTimeString('id-ID', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
 }
 
 function getCurrentTime() {
@@ -674,6 +645,44 @@ function importFromJSON(file) {
         
         reader.readAsText(file);
     });
+}
+
+// ============================================
+// NOTIFICATION FUNCTIONS
+// ============================================
+
+/**
+ * Show a notification message with auto-dismiss
+ * @param {string} message - Notification message to display
+ */
+function showNotification(message) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--primary-color);
+        color: #ffffff;
+        padding: 12px 24px;
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 14px;
+        font-weight: bold;
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 3000);
 }
 
 // ============================================
