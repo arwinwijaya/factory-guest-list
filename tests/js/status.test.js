@@ -426,6 +426,49 @@ describe('Integration: display.html uses new status values', () => {
 });
 
 // ============================================
+// UX Enhancement: Loading States
+// =============================================
+describe('UX Enhancement: showLoading and hideLoading functions', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+    // Create loading container HTML structure
+    env.document.body.innerHTML = `
+      <div id="loadingContainer" style="display:none;">
+        <div class="loading-spinner"></div>
+      </div>
+      <table id="guestTable">
+        <tbody id="guestTableBody"></tbody>
+      </table>
+    `;
+  });
+
+  it('Given loading container exists, When showLoading called, Then spinner element is displayed', () => {
+    env.window.showLoading();
+    const container = env.document.getElementById('loadingContainer');
+    expect(container.style.display).toBe('flex');
+  });
+
+  it('Given spinner is displayed, When hideLoading called, Then spinner is removed', () => {
+    env.window.showLoading();
+    expect(env.document.getElementById('loadingContainer').style.display).toBe('flex');
+    env.window.hideLoading();
+    expect(env.document.getElementById('loadingContainer').style.display).toBe('none');
+  });
+
+  it('Given no loading container, When showLoading called, Then no error thrown', () => {
+    env.document.body.innerHTML = '';
+    expect(() => env.window.showLoading()).not.toThrow();
+  });
+
+  it('Given no loading container, When hideLoading called, Then no error thrown', () => {
+    env.document.body.innerHTML = '';
+    expect(() => env.window.hideLoading()).not.toThrow();
+  });
+});
+
+// ============================================
 // UX Enhancement: Confirmation Modal
 // =============================================
 describe('UX Enhancement: showDeleteConfirmation function', () => {

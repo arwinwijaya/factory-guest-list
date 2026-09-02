@@ -215,6 +215,30 @@ function confirmDelete() {
 }
 
 // ============================================
+// LOADING STATE FUNCTIONS
+// ============================================
+
+/**
+ * Show loading spinner in the table area
+ */
+function showLoading() {
+    const container = document.getElementById('loadingContainer');
+    if (container) {
+        container.style.display = 'flex';
+    }
+}
+
+/**
+ * Hide loading spinner
+ */
+function hideLoading() {
+    const container = document.getElementById('loadingContainer');
+    if (container) {
+        container.style.display = 'none';
+    }
+}
+
+// ============================================
 // AUTH FUNCTIONS
 // ============================================
 
