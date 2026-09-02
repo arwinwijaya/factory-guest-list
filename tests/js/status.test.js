@@ -426,6 +426,90 @@ describe('Integration: display.html uses new status values', () => {
 });
 
 // ============================================
+// UX Enhancement: Confirmation Modal
+// =============================================
+describe('UX Enhancement: showDeleteConfirmation function', () => {
+  let env;
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+    env = createAppEnv();
+    // Seed with a test guest
+    env.window.saveGuests([
+      { id: 'guest_123', nama: 'John Doe', tanggal: '2025-09-15', perusahaan: 'PT Maju', keperluan: 'Meeting', status: 'active', createdAt: new Date().toISOString() },
+    ]);
+    // Create modal HTML structure
+    env.document.body.innerHTML = `
+      <div id="deleteModal" class="modal-overlay" style="display:none;">
+        <div class="modal-container">
+          <div class="modal-header">
+            <h3>Apakah Anda Yakin?</h3>
+          </div>
+          <div class="modal-body">
+            <p class="modal-guest-name"></p>
+            <p class="modal-guest-company"></p>
+            <p class="modal-guest-date"></p>
+            <p class="modal-warning">Data yang dihapus tidak dapat dikembalikan.</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">Tidak</button>
+            <button class="btn btn-danger" onclick="confirmDelete()">Ya</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  it('Given guest "guest_123", When showDeleteConfirmation called, Then guestId stored and modal visible', () => {
+    env.window.showDeleteConfirmation('guest_123');
+    expect(env.window._pendingDeleteId).toBe('guest_123');
+    const modal = env.document.getElementById('deleteModal');
+    expect(modal.style.display).toBe('flex');
+  });
+
+  it('Given modal is open, Then title shows "Apakah Anda Yakin?"', () => {
+    env.window.showDeleteConfirmation('guest_123');
+    const title = env.document.querySelector('.modal-header h3');
+    expect(title.textContent).toBe('Apakah Anda Yakin?');
+  });
+
+  it('Given modal is open, Then body shows guest nama, perusahaan, tanggal', () => {
+    env.window.showDeleteConfirmation('guest_123');
+    expect(env.document.querySelector('.modal-guest-name').textContent).toContain('John Doe');
+    expect(env.document.querySelector('.modal-guest-company').textContent).toContain('PT Maju');
+    expect(env.document.querySelector('.modal-guest-date').textContent).toContain('15');
+  });
+
+  it('Given modal is open, Then buttons [Tidak] and [Ya] are present', () => {
+    env.window.showDeleteConfirmation('guest_123');
+    const buttons = env.document.querySelectorAll('.modal-footer .btn');
+    expect(buttons.length).toBe(2);
+    expect(buttons[0].textContent.trim()).toBe('Tidak');
+    expect(buttons[1].textContent.trim()).toBe('Ya');
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('Given modal is open, When closeModal called, Then modal hidden', () => {
+    env.window.showDeleteConfirmation('guest_123');
+    expect(env.document.getElementById('deleteModal').style.display).toBe('flex');
+    env.window.closeModal();
+    vi.advanceTimersByTime(200);
+    expect(env.document.getElementById('deleteModal').style.display).toBe('none');
+  });
+
+  it('Given modal is open, When confirmDelete called, Then guest removed and modal closed', () => {
+    env.window.showDeleteConfirmation('guest_123');
+    env.window.confirmDelete();
+    const guests = env.window.getGuests();
+    expect(guests.find(g => g.id === 'guest_123')).toBeUndefined();
+    expect(env.document.getElementById('deleteModal').style.display).toBe('none');
+  });
+});
+
+// ============================================
 // UX Enhancement: Pagination Functions
 // =============================================
 describe('UX Enhancement: paginateGuests function', () => {
