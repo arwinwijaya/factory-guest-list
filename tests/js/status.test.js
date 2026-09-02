@@ -426,6 +426,168 @@ describe('Integration: display.html uses new status values', () => {
 });
 
 // ============================================
+// UX Enhancement: Integration - renderGuestList
+// =============================================
+describe('UX Enhancement: renderGuestList integration', () => {
+  let env;
+
+  beforeEach(() => {
+    env = createAppEnv();
+    // Create full admin page HTML structure
+    env.document.body.innerHTML = `
+      <div class="guest-table-container">
+        <div class="guest-table-header">
+          <span class="guest-count" id="guestCount">0 tamu</span>
+        </div>
+        <div class="table-controls">
+          <div class="per-page-container">
+            <select id="perPageSelect" onchange="changeItemsPerPage(this.value)">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="All">All</option>
+            </select>
+          </div>
+          <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Ketik untuk mencari...">
+          </div>
+        </div>
+        <table class="guest-table">
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Tanggal</th>
+              <th>Perusahaan</th>
+              <th>Keperluan</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="guestTableBody"></tbody>
+        </table>
+        <div id="loadingContainer" style="display:none;"><div class="loading-spinner"></div></div>
+        <div id="emptyState" class="empty-state hidden">
+          <p>Belum ada tamu</p>
+          <button class="btn" onclick="document.getElementById('nama').focus()">Tambah Tamu Baru</button>
+        </div>
+        <div id="noResultsState" class="empty-state hidden">
+          <p id="noResultsText"></p>
+        </div>
+        <div id="paginationContainer" class="pagination-container hidden">
+          <div class="pagination-info" id="paginationInfo"></div>
+          <div class="pagination-controls">
+            <button class="btn btn-small" id="prevBtn" onclick="changePage(guestListState.currentPage - 1)">&lt; Sebelumnya</button>
+            <div class="page-numbers" id="pageNumbers"></div>
+            <button class="btn btn-small" id="nextBtn" onclick="changePage(guestListState.currentPage + 1)">Berikutnya &gt;</button>
+          </div>
+        </div>
+      </div>
+      <div id="deleteModal" class="modal-overlay" style="display:none;">
+        <div class="modal-container">
+          <div class="modal-header"><h3>Apakah Anda Yakin?</h3></div>
+          <div class="modal-body">
+            <p class="modal-guest-name"></p>
+            <p class="modal-guest-company"></p>
+            <p class="modal-guest-date"></p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">Tidak</button>
+            <button class="btn btn-danger" onclick="confirmDelete()">Ya</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  it('Given 25 guests, searchQuery="", page=1, perPage=10, When renderGuestList called, Then 10 rows rendered', () => {
+    const guests = Array.from({ length: 25 }, (_, i) => ({
+      id: `guest_${i + 1}`,
+      nama: `Guest ${i + 1}`,
+      tanggal: '2025-09-15',
+      perusahaan: 'PT Test',
+      keperluan: 'Testing',
+      status: 'active',
+      createdAt: new Date().toISOString()
+    }));
+    env.window.saveGuests(guests);
+    env.window.guestListState.itemsPerPage = 10;
+    env.window.guestListState.currentPage = 1;
+    env.window.guestListState.searchQuery = '';
+    
+    env.window.renderGuestList();
+    
+    const rows = env.document.querySelectorAll('#guestTableBody tr');
+    expect(rows.length).toBe(10);
+  });
+
+  it('Given 25 guests, searchQuery="john", When renderGuestList called, Then only matching guests shown', () => {
+    const guests = [
+      { id: 'g1', nama: 'John Doe', tanggal: '2025-09-15', perusahaan: 'PT Maju', keperluan: 'Meeting', status: 'active', createdAt: new Date().toISOString() },
+      { id: 'g2', nama: 'Jane Smith', tanggal: '2025-09-16', perusahaan: 'CV Berkah', keperluan: 'Kunjungan', status: 'ongoing', createdAt: new Date().toISOString() },
+      ...Array.from({ length: 23 }, (_, i) => ({
+        id: `guest_${i + 3}`,
+        nama: `Guest ${i + 3}`,
+        tanggal: '2025-09-17',
+        perusahaan: 'PT Test',
+        keperluan: 'Testing',
+        status: 'active',
+        createdAt: new Date().toISOString()
+      }))
+    ];
+    env.window.saveGuests(guests);
+    env.window.guestListState.searchQuery = 'john';
+    
+    env.window.renderGuestList();
+    
+    const rows = env.document.querySelectorAll('#guestTableBody tr');
+    expect(rows.length).toBe(1);
+    expect(rows[0].textContent).toContain('John Doe');
+  });
+
+  it('Given 0 guests, When renderGuestList called, Then empty state "Belum ada tamu" shown', () => {
+    env.window.saveGuests([]);
+    
+    env.window.renderGuestList();
+    
+    const emptyState = env.document.getElementById('emptyState');
+    expect(emptyState.classList.contains('hidden')).toBe(false);
+    expect(emptyState.textContent).toContain('Belum ada tamu');
+  });
+
+  it('Given search "xyz123" with no matches, When renderGuestList called, Then "Tidak ada hasil" shown', () => {
+    env.window.saveGuests([
+      { id: 'g1', nama: 'John Doe', tanggal: '2025-09-15', perusahaan: 'PT Maju', keperluan: 'Meeting', status: 'active', createdAt: new Date().toISOString() },
+    ]);
+    env.window.guestListState.searchQuery = 'xyz123';
+    
+    env.window.renderGuestList();
+    
+    const noResults = env.document.getElementById('noResultsState');
+    expect(noResults.classList.contains('hidden')).toBe(false);
+    expect(env.document.getElementById('noResultsText').textContent).toContain('xyz123');
+  });
+
+  it('Given page=3, When searchQuery changes, Then pagination resets to page 1', () => {
+    const guests = Array.from({ length: 50 }, (_, i) => ({
+      id: `guest_${i + 1}`,
+      nama: `Guest ${i + 1}`,
+      tanggal: '2025-09-15',
+      perusahaan: 'PT Test',
+      keperluan: 'Testing',
+      status: 'active',
+      createdAt: new Date().toISOString()
+    }));
+    env.window.saveGuests(guests);
+    env.window.guestListState.currentPage = 3;
+    env.window.guestListState.searchQuery = 'Guest 1';
+    
+    env.window.renderGuestList();
+    
+    expect(env.window.guestListState.currentPage).toBe(1);
+  });
+});
+
+// ============================================
 // UX Enhancement: Loading States
 // =============================================
 describe('UX Enhancement: showLoading and hideLoading functions', () => {

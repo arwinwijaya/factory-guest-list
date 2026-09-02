@@ -239,6 +239,170 @@ function hideLoading() {
 }
 
 // ============================================
+// RENDER FUNCTIONS
+// ============================================
+
+/**
+ * Render the guest list with search, pagination, and empty states
+ */
+function renderGuestList() {
+    const tbody = document.getElementById('guestTableBody');
+    const emptyState = document.getElementById('emptyState');
+    const noResultsState = document.getElementById('noResultsState');
+    const noResultsText = document.getElementById('noResultsText');
+    const paginationContainer = document.getElementById('paginationContainer');
+    const guestCount = document.getElementById('guestCount');
+    const paginationInfo = document.getElementById('paginationInfo');
+    const pageNumbers = document.getElementById('pageNumbers');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    if (!tbody) return;
+    
+    // Get all guests and apply search filter
+    const allGuests = getGuests();
+    const filteredGuests = searchGuests(guestListState.searchQuery);
+    
+    // Update state
+    guestListState.filteredGuests = filteredGuests;
+    guestListState.totalGuests = allGuests.length;
+    
+    // Reset to page 1 if search query changed
+    if (guestListState.searchQuery && guestListState.searchQuery.length >= 2) {
+        guestListState.currentPage = 1;
+    }
+    
+    // Clear table
+    tbody.innerHTML = '';
+    
+    // Handle empty states
+    if (allGuests.length === 0) {
+        // No data at all
+        renderEmptyState('no-data');
+        if (guestCount) guestCount.textContent = '0 tamu';
+        if (paginationContainer) paginationContainer.classList.add('hidden');
+        return;
+    }
+    
+    if (filteredGuests.length === 0 && guestListState.searchQuery.length >= 2) {
+        // No search results
+        renderEmptyState('no-results');
+        if (guestCount) guestCount.textContent = '0 tamu';
+        if (paginationContainer) paginationContainer.classList.add('hidden');
+        return;
+    }
+    
+    // Hide empty states
+    if (emptyState) emptyState.classList.add('hidden');
+    if (noResultsState) noResultsState.classList.add('hidden');
+    
+    // Apply pagination
+    const paginatedResult = paginateGuests(
+        filteredGuests,
+        guestListState.currentPage,
+        guestListState.itemsPerPage
+    );
+    
+    // Update current page (may be adjusted by paginateGuests)
+    guestListState.currentPage = paginatedResult.currentPage;
+    
+    // Render guest rows
+    paginatedResult.items.forEach(guest => {
+        const row = createGuestRow(guest, true);
+        
+        // Apply search highlight if query exists
+        if (guestListState.searchQuery.length >= 2) {
+            const cells = row.querySelectorAll('td');
+            cells.forEach(cell => {
+                if (cell.querySelector('.status-badge') || cell.querySelector('.action-buttons')) {
+                    return; // Skip status and action cells
+                }
+                cell.innerHTML = highlightText(cell.innerHTML, guestListState.searchQuery);
+            });
+        }
+        
+        tbody.appendChild(row);
+    });
+    
+    // Update guest count
+    if (guestCount) {
+        guestCount.textContent = `${filteredGuests.length} tamu`;
+    }
+    
+    // Update pagination
+    if (paginationContainer) {
+        if (paginatedResult.totalPages > 1) {
+            paginationContainer.classList.remove('hidden');
+            
+            // Update pagination info
+            const startItem = (paginatedResult.currentPage - 1) * (guestListState.itemsPerPage === 'All' ? filteredGuests.length : guestListState.itemsPerPage) + 1;
+            const endItem = Math.min(startItem + (guestListState.itemsPerPage === 'All' ? filteredGuests.length : guestListState.itemsPerPage) - 1, filteredGuests.length);
+            
+            if (paginationInfo) {
+                paginationInfo.textContent = `Menampilkan ${startItem}-${endItem} dari ${filteredGuests.length} tamu`;
+            }
+            
+            // Render page numbers
+            if (pageNumbers) {
+                pageNumbers.innerHTML = '';
+                const maxVisiblePages = 3;
+                let startPage = Math.max(1, paginatedResult.currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(paginatedResult.totalPages, startPage + maxVisiblePages - 1);
+                
+                if (endPage - startPage + 1 < maxVisiblePages) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = `btn btn-small page-btn ${i === paginatedResult.currentPage ? 'active' : ''}`;
+                    pageBtn.textContent = i;
+                    pageBtn.onclick = () => changePage(i);
+                    pageNumbers.appendChild(pageBtn);
+                }
+            }
+            
+            // Update prev/next buttons
+            if (prevBtn) {
+                prevBtn.disabled = paginatedResult.currentPage === 1;
+            }
+            if (nextBtn) {
+                nextBtn.disabled = paginatedResult.currentPage === paginatedResult.totalPages;
+            }
+        } else {
+            paginationContainer.classList.add('hidden');
+        }
+    }
+}
+
+/**
+ * Render empty state based on type
+ * @param {string} type - 'no-data' or 'no-results'
+ */
+function renderEmptyState(type) {
+    const emptyState = document.getElementById('emptyState');
+    const noResultsState = document.getElementById('noResultsState');
+    const noResultsText = document.getElementById('noResultsText');
+    const tbody = document.getElementById('guestTableBody');
+    
+    // Hide all empty states first
+    if (emptyState) emptyState.classList.add('hidden');
+    if (noResultsState) noResultsState.classList.add('hidden');
+    
+    // Clear table
+    if (tbody) tbody.innerHTML = '';
+    
+    if (type === 'no-data') {
+        if (emptyState) emptyState.classList.remove('hidden');
+    } else if (type === 'no-results') {
+        if (noResultsState) noResultsState.classList.remove('hidden');
+        if (noResultsText) {
+            noResultsText.textContent = `Tidak ada hasil untuk '${guestListState.searchQuery}'`;
+        }
+    }
+}
+
+// ============================================
 // AUTH FUNCTIONS
 // ============================================
 
