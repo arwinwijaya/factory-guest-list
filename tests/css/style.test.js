@@ -367,3 +367,51 @@ describe('UX Enhancement - Table Controls Styles', () => {
     expect(styles['justify-content']).toBe('space-between');
   });
 });
+
+describe('CSS Cleanup - Unused Selectors Removed', () => {
+  it('should NOT contain .text-center (unused utility)', () => {
+    const styles = getSelectorStyles(cssContent, '.text-center');
+    expect(styles).toBeNull();
+  });
+
+  it('should NOT contain .text-right (unused utility)', () => {
+    const styles = getSelectorStyles(cssContent, '.text-right');
+    expect(styles).toBeNull();
+  });
+
+  it('should NOT contain .mt-16 (unused utility)', () => {
+    const styles = getSelectorStyles(cssContent, '.mt-16');
+    expect(styles).toBeNull();
+  });
+
+  it('should NOT contain .mb-16 (unused utility)', () => {
+    const styles = getSelectorStyles(cssContent, '.mb-16');
+    expect(styles).toBeNull();
+  });
+});
+
+describe('CSS Cleanup - Preserved Selectors', () => {
+  it('should still contain .hidden (used via classList.add)', () => {
+    const styles = getSelectorStyles(cssContent, '.hidden');
+    expect(styles).not.toBeNull();
+    expect(styles['display']).toBe('none');
+  });
+
+  it('should still contain all :root CSS variables', () => {
+    const vars = getRootVariables(cssContent);
+    expect(vars['--primary-color']).toBe('#006B3F');
+    expect(vars['--accent-orange']).toBe('#F5A623');
+    expect(vars['--accent-yellow']).toBe('#C4D600');
+    expect(vars['--accent-blue']).toBe('#4ECDC4');
+    expect(vars['--accent-red']).toBe('#ff4444');
+    expect(vars['--bg-primary']).toBe('#f5f5f5');
+    expect(vars['--bg-secondary']).toBe('#ffffff');
+    expect(vars['--bg-card']).toBe('#ffffff');
+    expect(vars['--text-primary']).toBe('#333333');
+    expect(vars['--text-secondary']).toBe('#666666');
+    expect(vars['--text-muted']).toBe('#999999');
+    expect(vars['--border-color']).toBe('#e0e0e0');
+    expect(vars['--font-mono']).toBeDefined();
+    expect(vars['--font-sans']).toBeDefined();
+  });
+});

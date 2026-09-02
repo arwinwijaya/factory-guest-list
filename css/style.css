@@ -924,10 +924,6 @@ body {
 /* ============================================
    UTILITY CLASSES
    ============================================ */
-.text-center { text-align: center; }
-.text-right { text-align: right; }
-.mt-16 { margin-top: 16px; }
-.mb-16 { margin-bottom: 16px; }
 .hidden { display: none; }
 
 /* ============================================
